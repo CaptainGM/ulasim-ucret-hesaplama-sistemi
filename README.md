@@ -2,6 +2,8 @@
 
 İki konum arasında toplu taşıma (otobüs, tramvay) ve taksiyi bir arada değerlendirerek en uygun rotayı, süreyi ve ücreti hesaplayan bir Java masaüstü uygulaması.
 
+![Uygulama ekran görüntüsü](screenshot.png)
+
 ## Özellikler
 
 - Duraklar arası graf tabanlı rota hesaplama (`UlasimGrafi`, `Rota`, `RotaSegmenti`)
@@ -30,5 +32,7 @@
 javac -cp lib/json-20250107.jar Main.java -d out
 java -cp "out;lib/json-20250107.jar" Main
 ```
+
+Arayüzde varsayılan enlem/boylam değerleriyle "Rota Hesapla" butonuna basarak örnek bir rota/ücret hesaplaması görebilirsiniz.
 
 (Linux/macOS'ta classpath ayracı `;` yerine `:` kullanılır.)

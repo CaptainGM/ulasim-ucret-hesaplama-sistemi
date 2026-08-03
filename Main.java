@@ -13,10 +13,9 @@ import java.util.List;
 
 public  class Main {
     public static void main(String[] args) {
-        UlasimSistemi sistem = new UlasimSistemi("veriseti.json");
+        UlasimUygulamasi.main(args);
+    }
 
-        System.out.println("Sistem değişkeni: " + sistem);    }
-    
     private static List<Durak> durakVerileriniOku(String dosyaYolu) {
 
         System.out.println("durakVerileriniOku metodu çağırıldı.");        List<Durak> durakListesi = new ArrayList<>();
