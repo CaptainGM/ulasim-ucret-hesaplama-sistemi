@@ -4,6 +4,15 @@
 
 ![Uygulama ekran görüntüsü](screenshot.png)
 
+## Mimari
+
+```mermaid
+flowchart LR
+    J[veriseti.json] --> SYS["UlasimSistemi / UlasimGrafi"]
+    SYS --> HESAP["Rota + Ücret Hesaplama"]
+    HESAP --> UI[Swing Arayüzü]
+```
+
 ## Özellikler
 
 - Duraklar arası graf tabanlı rota hesaplama (`UlasimGrafi`, `Rota`, `RotaSegmenti`)
