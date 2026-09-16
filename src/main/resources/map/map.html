@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<title>Ulaşım Haritası</title>
+<link rel="stylesheet" href="leaflet.css" />
+<style>
+  html, body, #map { height: 100%; margin: 0; padding: 0; }
+  .pin-icon {
+    width: 26px; height: 26px; border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    border: 2px solid #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+  }
+  .pin-icon span {
+    display: block; transform: rotate(45deg);
+    text-align: center; line-height: 22px; font-size: 12px; font-weight: bold; color: #fff;
+  }
+  .pin-start { background: #16a34a; }
+  .pin-hedef { background: #dc2626; }
+  .stop-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    border: 2px solid #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  }
+  .stop-bus { background: #2563eb; }
+  .stop-tram { background: #ea580c; }
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="leaflet.js"></script>
+<script>
+  var map = L.map('map').setView([40.77, 29.96], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap katkıda bulunanlar'
+  }).addTo(map);
+
+  var startMarker = null;
+  var hedefMarker = null;
+  var routeLayers = [];
+  var stopMarkers = [];
+
+  var RENK = {
+    yurume: { color: '#6b7280', dashArray: '4 6' },
+    otobus: { color: '#2563eb', dashArray: null },
+    tramvay: { color: '#ea580c', dashArray: null },
+    taksi: { color: '#ca8a04', dashArray: null },
+    transfer: { color: '#7c3aed', dashArray: '2 6' }
+  };
+
+  function pinIcon(cssClass, harf) {
+    return L.divIcon({
+      className: '',
+      html: '<div class="pin-icon ' + cssClass + '"><span>' + harf + '</span></div>',
+      iconSize: [26, 26],
+      iconAnchor: [13, 26]
+    });
+  }
+
+  function invalidateSize() {
+    map.invalidateSize();
+  }
+
+  function setMarkers(lat1, lon1, lat2, lon2) {
+    if (startMarker) { map.removeLayer(startMarker); }
+    if (hedefMarker) { map.removeLayer(hedefMarker); }
+
+    startMarker = L.marker([lat1, lon1], { icon: pinIcon('pin-start', 'B') }).addTo(map);
+    hedefMarker = L.marker([lat2, lon2], { icon: pinIcon('pin-hedef', 'H') }).addTo(map);
+
+    map.fitBounds(L.latLngBounds([[lat1, lon1], [lat2, lon2]]), { padding: [60, 60] });
+  }
+
+  function clearRoute() {
+    routeLayers.forEach(function (layer) { map.removeLayer(layer); });
+    routeLayers = [];
+  }
+
+  function drawRoute(segmentler) {
+    clearRoute();
+    var tumNoktalar = [];
+
+    segmentler.forEach(function (segment) {
+      var stil = RENK[segment.tip] || RENK.transfer;
+      var noktalar = segment.coords;
+      var line = L.polyline(noktalar, {
+        color: stil.color,
+        weight: 5,
+        opacity: 0.85,
+        dashArray: stil.dashArray
+      }).addTo(map);
+      routeLayers.push(line);
+      tumNoktalar = tumNoktalar.concat(noktalar);
+    });
+
+    if (tumNoktalar.length > 0) {
+      map.fitBounds(L.latLngBounds(tumNoktalar), { padding: [60, 60] });
+    }
+  }
+
+  function setStops(duraklar) {
+    stopMarkers.forEach(function (m) { map.removeLayer(m); });
+    stopMarkers = [];
+
+    duraklar.forEach(function (d) {
+      var cssClass = d.tip === 'bus' ? 'stop-bus' : 'stop-tram';
+      var icon = L.divIcon({
+        className: '',
+        html: '<div class="stop-dot ' + cssClass + '"></div>',
+        iconSize: [10, 10],
+        iconAnchor: [5, 5]
+      });
+      var marker = L.marker([d.lat, d.lon], { icon: icon, title: d.name }).addTo(map);
+      marker.bindTooltip(d.name);
+      stopMarkers.push(marker);
+    });
+  }
+
+  map.on('click', function (e) {
+    window.status = e.latlng.lat + ',' + e.latlng.lng + ',' + Date.now();
+  });
+</script>
+</body>
+</html>

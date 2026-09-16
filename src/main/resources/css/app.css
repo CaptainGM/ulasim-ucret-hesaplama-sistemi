@@ -1,0 +1,136 @@
+.root {
+    -bg: #f1f5f9;
+    -surface: #ffffff;
+    -primary: #2563eb;
+    -primary-dark: #1d4ed8;
+    -text: #1f2937;
+    -muted: #6b7280;
+    -border: #e2e8f0;
+    -success: #16a34a;
+    -danger: #dc2626;
+
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: -bg;
+}
+
+.form-card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 10;
+    -fx-border-color: -border;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+    -fx-padding: 16;
+}
+
+.field-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: -muted;
+    -fx-font-weight: bold;
+}
+
+.text-field, .combo-box {
+    -fx-background-color: -bg;
+    -fx-background-radius: 6;
+    -fx-border-color: -border;
+    -fx-border-radius: 6;
+    -fx-padding: 6 8;
+}
+
+.field-error {
+    -fx-border-color: -danger;
+    -fx-border-width: 1.5;
+}
+
+.button-primary {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+.button-primary:hover { -fx-background-color: -primary-dark; }
+
+.button-toggle {
+    -fx-background-color: -surface;
+    -fx-text-fill: -text;
+    -fx-border-color: -border;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+.button-toggle:hover { -fx-border-color: -primary; }
+.button-toggle:selected {
+    -fx-background-color: -primary;
+    -fx-text-fill: white;
+    -fx-border-color: -primary;
+}
+
+.route-card {
+    -fx-background-color: -surface;
+    -fx-background-radius: 10;
+    -fx-border-color: -border;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);
+    -fx-padding: 14;
+    -fx-cursor: hand;
+}
+.route-card:hover {
+    -fx-border-color: -primary;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.25), 10, 0, 0, 3);
+}
+
+.route-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
+
+.route-badge {
+    -fx-background-color: -bg;
+    -fx-background-radius: 12;
+    -fx-padding: 3 10;
+    -fx-font-size: 11px;
+    -fx-text-fill: -muted;
+    -fx-font-weight: bold;
+}
+
+.route-badge-price {
+    -fx-background-color: derive(-success, 85%);
+    -fx-text-fill: -success;
+}
+
+.segment-row {
+    -fx-padding: 4 0;
+    -fx-font-size: 12px;
+    -fx-text-fill: -text;
+}
+
+.segment-icon {
+    -fx-font-size: 16px;
+}
+
+.segment-meta {
+    -fx-font-size: 11px;
+    -fx-text-fill: -muted;
+}
+
+.section-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -muted;
+}
+
+.empty-hint {
+    -fx-font-size: 13px;
+    -fx-text-fill: -muted;
+    -fx-wrap-text: true;
+}
+
+.app-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -text;
+}
