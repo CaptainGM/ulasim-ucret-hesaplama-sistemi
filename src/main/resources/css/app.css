@@ -1,5 +1,6 @@
 /* ==========================================================================
-   TransitRoute Modern Tasarım Sistemi & CSS Tokenları
+   TransitRoute Modern Tasarım Sistemi & Opensource UI Bileşenleri
+   İlham: https://opensourceui.in/components (Tactile Buttons, Floating Pills, Depth Cards)
    ========================================================================== */
 
 .root {
@@ -7,21 +8,27 @@
     -bg-surface: #ffffff;
     -bg-sidebar: #ffffff;
     -bg-muted: #f1f5f9;
-    -bg-card-hover: #fcfdfe;
+    -bg-card-hover: #fcfdff;
 
     -primary: #2563eb;
     -primary-hover: #1d4ed8;
+    -primary-active: #1e40af;
     -primary-light: #eff6ff;
+    -primary-glow: rgba(37, 99, 235, 0.35);
 
     -emerald: #10b981;
     -emerald-light: #ecfdf5;
     -emerald-border: #a7f3d0;
+    -emerald-dark: #065f46;
 
     -amber: #f59e0b;
     -amber-light: #fef3c7;
+    -amber-border: #fde68a;
+    -amber-dark: #92400e;
 
     -rose: #ef4444;
     -rose-light: #fef2f2;
+    -rose-dark: #991b1b;
 
     -purple: #8b5cf6;
     -purple-light: #f5f3ff;
@@ -32,9 +39,10 @@
     -text-light: #94a3b8;
 
     -border-subtle: #e2e8f0;
+    -border-card: #e5e7eb;
     -border-focus: #3b82f6;
 
-    -fx-font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    -fx-font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Roboto", "Helvetica Neue", sans-serif;
     -fx-background-color: -bg-app;
 }
 
@@ -60,14 +68,15 @@
 
 /* Header & Marka */
 .brand-title {
-    -fx-font-size: 20px;
-    -fx-font-weight: 800;
+    -fx-font-size: 21px;
+    -fx-font-weight: 900;
     -fx-text-fill: -text-main;
+    -fx-letter-spacing: -0.5px;
 }
 
 .brand-subtitle {
     -fx-font-size: 11px;
-    -fx-font-weight: 500;
+    -fx-font-weight: 600;
     -fx-text-fill: -text-muted;
 }
 
@@ -75,11 +84,11 @@
     -fx-font-size: 10px;
     -fx-font-weight: 800;
     -fx-text-fill: -text-light;
-    -fx-letter-spacing: 0.5px;
+    -fx-letter-spacing: 0.8px;
 }
 
 /* ==========================================================================
-   Kartlar (Paneller, Kontroller)
+   Kartlar (Paneller, Kontroller) - Opensource UI Depth Cards
    ========================================================================== */
 
 .control-card {
@@ -88,45 +97,147 @@
     -fx-border-color: -border-subtle;
     -fx-border-radius: 12;
     -fx-border-width: 1;
-    -fx-padding: 12;
-    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.04), 8, 0, 0, 2);
+    -fx-padding: 13;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.04), 10, 0, 0, 2);
 }
 
 .preset-card {
-    -fx-background-color: -bg-muted;
-    -fx-background-radius: 10;
-    -fx-padding: 10;
-    -fx-border-color: -border-subtle;
-    -fx-border-radius: 10;
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 12;
+    -fx-padding: 11;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
 }
 
+/* ==========================================================================
+   Opensource UI Tarzı Butonlar (Buttons & Pills)
+   ========================================================================== */
+
+/* 1. Birincil Aksiyon Butonu (Tactile 3D / Glowing CTA) */
+.button-primary {
+    -fx-background-color: linear-gradient(to bottom, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 800;
+    -fx-font-size: 13.5px;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-radius: 10;
+    -fx-border-width: 1 1 0 1;
+    -fx-padding: 11 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.40), 12, 0, 0, 3);
+}
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to bottom, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.55), 16, 0, 0, 5);
+    -fx-translate-y: -1px;
+}
+.button-primary:pressed {
+    -fx-background-color: linear-gradient(to bottom, #1d4ed8 0%, #1e40af 100%);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.2), 6, 0, 0, 1);
+    -fx-translate-y: 1.5px;
+}
+
+/* 2. Floating Pill / Preset Güzergah Çipleri (Opensource UI Soft Pill) */
 .preset-chip {
     -fx-background-color: -bg-surface;
     -fx-text-fill: -text-body;
     -fx-font-size: 11px;
-    -fx-font-weight: 600;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.03), 4, 0, 0, 1);
+}
+.preset-chip:hover {
+    -fx-background-color: #eff6ff;
+    -fx-text-fill: -primary;
+    -fx-border-color: #93c5fd;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.15), 8, 0, 0, 2);
+    -fx-translate-y: -1px;
+}
+.preset-chip:pressed {
+    -fx-background-color: #dbeafe;
+    -fx-translate-y: 1px;
+}
+
+/* 3. Noktaları Değiş-Tokuş Et (Swap / Tactile Square Button) */
+.btn-swap {
+    -fx-background-color: -bg-muted;
+    -fx-text-fill: -primary;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
     -fx-background-radius: 8;
     -fx-border-color: -border-subtle;
     -fx-border-radius: 8;
-    -fx-padding: 5 10;
+    -fx-border-width: 1;
+    -fx-padding: 4 8;
     -fx-cursor: hand;
-}
-.preset-chip:hover {
-    -fx-background-color: -primary-light;
-    -fx-text-fill: -primary;
-    -fx-border-color: -primary;
-}
-
-.btn-swap {
-    -fx-background-color: transparent;
-    -fx-text-fill: -primary;
-    -fx-font-size: 11px;
-    -fx-font-weight: 700;
-    -fx-cursor: hand;
-    -fx-padding: 2 6;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.03), 3, 0, 0, 1);
 }
 .btn-swap:hover {
-    -fx-underline: true;
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: -primary-hover;
+    -fx-border-color: #93c5fd;
+    -fx-translate-y: -1px;
+}
+.btn-swap:pressed {
+    -fx-background-color: #bfdbfe;
+    -fx-translate-y: 1px;
+}
+
+/* 4. Haritadan Seç Toggle Butonları (Opensource UI Segmented Latch) */
+.button-toggle {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: -text-body;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4 9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.02), 3, 0, 0, 1);
+}
+.button-toggle:hover {
+    -fx-border-color: #93c5fd;
+    -fx-text-fill: -primary;
+    -fx-background-color: #f8fafc;
+}
+.button-toggle:selected {
+    -fx-background-color: linear-gradient(to bottom, #2563eb, #1d4ed8);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #1e40af;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.35), 6, 0, 0, 2);
+}
+
+/* 5. Kart İçi Aksiyon Butonu (Depth Outline Button) */
+.btn-route-action {
+    -fx-background-color: #f8fafc;
+    -fx-text-fill: -primary;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 8;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+    -fx-padding: 5 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.03), 4, 0, 0, 1);
+}
+.btn-route-action:hover {
+    -fx-background-color: -primary;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: -primary;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.3), 8, 0, 0, 2);
+    -fx-translate-y: -1px;
+}
+.btn-route-action:pressed {
+    -fx-translate-y: 1px;
 }
 
 /* ==========================================================================
@@ -135,12 +246,12 @@
 
 .field-label {
     -fx-font-size: 11px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
     -fx-text-fill: -text-muted;
 }
 
 .text-field {
-    -fx-background-color: -bg-muted;
+    -fx-background-color: #f8fafc;
     -fx-background-radius: 8;
     -fx-border-color: -border-subtle;
     -fx-border-radius: 8;
@@ -151,11 +262,11 @@
 .text-field:focused {
     -fx-background-color: -bg-surface;
     -fx-border-color: -border-focus;
-    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.15), 6, 0, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.18), 6, 0, 0, 0);
 }
 
 .text-field-mini {
-    -fx-font-size: 11px;
+    -fx-font-size: 10.5px;
     -fx-padding: 3 6;
     -fx-background-radius: 6;
     -fx-border-radius: 6;
@@ -167,7 +278,7 @@
 }
 
 .combo-box {
-    -fx-background-color: -bg-muted;
+    -fx-background-color: #f8fafc;
     -fx-background-radius: 8;
     -fx-border-color: -border-subtle;
     -fx-border-radius: 8;
@@ -182,84 +293,16 @@
     -fx-border-color: -border-focus;
 }
 
-.field-error {
-    -fx-border-color: -rose;
-    -fx-border-width: 1.5;
-}
-
-.traffic-hint {
-    -fx-font-size: 11px;
-    -fx-text-fill: -text-muted;
-    -fx-wrap-text: true;
-}
-
 .traffic-live-badge {
-    -fx-background-color: #fef3c7;
+    -fx-background-color: #fffbeb;
     -fx-text-fill: #92400e;
     -fx-border-color: #fde68a;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 7 10;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12;
     -fx-font-size: 11px;
-    -fx-font-weight: 600;
-}
-
-
-/* ==========================================================================
-   Butonlar
-   ========================================================================== */
-
-.button-primary {
-    -fx-background-color: linear-gradient(to right, #2563eb, #1d4ed8);
-    -fx-text-fill: white;
     -fx-font-weight: 700;
-    -fx-font-size: 13px;
-    -fx-background-radius: 8;
-    -fx-padding: 10 18;
-    -fx-cursor: hand;
-    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.3), 8, 0, 0, 2);
-}
-.button-primary:hover {
-    -fx-background-color: linear-gradient(to right, #1d4ed8, #1e40af);
-}
-.button-primary:pressed {
-    -fx-scale-x: 0.98;
-    -fx-scale-y: 0.98;
-}
-
-.button-secondary {
-    -fx-background-color: -bg-muted;
-    -fx-text-fill: -text-body;
-    -fx-font-weight: 600;
-    -fx-font-size: 12px;
-    -fx-background-radius: 8;
-    -fx-border-color: -border-subtle;
-    -fx-border-radius: 8;
-    -fx-padding: 9 14;
-    -fx-cursor: hand;
-}
-.button-secondary:hover {
-    -fx-background-color: #e2e8f0;
-}
-
-.button-toggle {
-    -fx-background-color: -bg-surface;
-    -fx-text-fill: -text-body;
-    -fx-font-size: 11px;
-    -fx-font-weight: 600;
-    -fx-border-color: -border-subtle;
-    -fx-border-radius: 6;
-    -fx-background-radius: 6;
-    -fx-padding: 4 8;
-    -fx-cursor: hand;
-}
-.button-toggle:hover {
-    -fx-border-color: -primary;
-}
-.button-toggle:selected {
-    -fx-background-color: -primary;
-    -fx-text-fill: white;
-    -fx-border-color: -primary;
+    -fx-effect: dropshadow(gaussian, rgba(245, 158, 11, 0.1), 6, 0, 0, 1);
 }
 
 /* ==========================================================================
@@ -270,17 +313,20 @@
     -fx-background-color: -bg-muted;
     -fx-text-fill: -text-body;
     -fx-font-size: 11px;
-    -fx-font-weight: 600;
-    -fx-background-radius: 6;
+    -fx-font-weight: 700;
+    -fx-background-radius: 8;
     -fx-padding: 6 10;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
 }
 
 .summary-card {
-    -fx-background-color: linear-gradient(to bottom right, #eff6ff, #f0fdf4);
-    -fx-background-radius: 10;
+    -fx-background-color: linear-gradient(to bottom right, #f0f7ff, #f0fdf4);
+    -fx-background-radius: 12;
     -fx-border-color: #bfdbfe;
-    -fx-border-radius: 10;
-    -fx-padding: 10 12;
+    -fx-border-radius: 12;
+    -fx-padding: 11 13;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.05), 8, 0, 0, 2);
 }
 
 .summary-title {
@@ -296,113 +342,126 @@
 }
 
 /* ==========================================================================
-   Rota Kartları (Google Maps / Citymapper Esintisi)
+   Rota Kartları (Citymapper / Opensource UI Esintisi)
    ========================================================================== */
 
 .route-card {
     -fx-background-color: -bg-surface;
-    -fx-background-radius: 12;
-    -fx-border-color: -border-subtle;
-    -fx-border-radius: 12;
+    -fx-background-radius: 14;
+    -fx-border-color: -border-card;
+    -fx-border-radius: 14;
     -fx-border-width: 1;
     -fx-padding: 14;
-    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.05), 8, 0, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.05), 10, 0, 0, 2);
     -fx-cursor: hand;
 }
 .route-card:hover {
     -fx-background-color: -bg-card-hover;
-    -fx-border-color: -primary;
-    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.18), 12, 0, 0, 4);
-    -fx-translate-y: -1;
+    -fx-border-color: #93c5fd;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.20), 16, 0, 0, 4);
+    -fx-translate-y: -2px;
 }
 
 .route-title {
-    -fx-font-size: 14px;
-    -fx-font-weight: 800;
+    -fx-font-size: 14.5px;
+    -fx-font-weight: 900;
     -fx-text-fill: -text-main;
 }
 
 .metric-highlight {
     -fx-font-size: 14px;
-    -fx-font-weight: 800;
+    -fx-font-weight: 900;
     -fx-text-fill: -primary;
 }
 
 .segment-meta {
     -fx-font-size: 11px;
-    -fx-font-weight: 500;
+    -fx-font-weight: 600;
     -fx-text-fill: -text-muted;
 }
 
-.route-action-link {
-    -fx-font-size: 11px;
-    -fx-font-weight: 700;
-    -fx-text-fill: -primary;
-}
-
-/* Rozetler */
+/* Rozetler - Opensource UI Pill Standartları */
 .route-badge {
-    -fx-background-radius: 9999;
-    -fx-padding: 3 8;
+    -fx-background-radius: 20;
+    -fx-padding: 3 9;
     -fx-font-size: 10px;
     -fx-font-weight: 800;
 }
 
 .route-badge-price {
     -fx-background-color: -emerald-light;
-    -fx-text-fill: #065f46;
+    -fx-text-fill: -emerald-dark;
     -fx-border-color: -emerald-border;
-    -fx-border-radius: 9999;
-    -fx-font-size: 13px;
-    -fx-padding: 4 10;
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-font-size: 13.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 12;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.15), 6, 0, 0, 1);
 }
 
 .badge-fast {
     -fx-background-color: #dbeafe;
     -fx-text-fill: #1e40af;
+    -fx-border-color: #bfdbfe;
+    -fx-border-radius: 20;
 }
 
 .badge-cheap {
     -fx-background-color: #dcfce7;
     -fx-text-fill: #15803d;
+    -fx-border-color: #bbf7d0;
+    -fx-border-radius: 20;
 }
 
 .badge-taxi {
     -fx-background-color: #fef9c3;
     -fx-text-fill: #854d0e;
+    -fx-border-color: #fef08a;
+    -fx-border-radius: 20;
 }
 
 .badge-tram {
     -fx-background-color: #ffedd5;
     -fx-text-fill: #9a3412;
+    -fx-border-color: #fed7aa;
+    -fx-border-radius: 20;
 }
 
 .badge-general {
     -fx-background-color: -bg-muted;
     -fx-text-fill: -text-body;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 20;
 }
 
 /* Hap (Pill) Rozetler */
 .badge-pill {
-    -fx-background-radius: 9999;
-    -fx-padding: 2 7;
+    -fx-background-radius: 20;
+    -fx-padding: 3 8;
     -fx-font-size: 10px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
 }
 
 .badge-saving {
     -fx-background-color: #ecfdf5;
     -fx-text-fill: #047857;
+    -fx-border-color: #a7f3d0;
+    -fx-border-radius: 20;
 }
 
 .badge-eco {
     -fx-background-color: #f0fdf4;
     -fx-text-fill: #166534;
+    -fx-border-color: #bbf7d0;
+    -fx-border-radius: 20;
 }
 
 .badge-calorie {
     -fx-background-color: #fff1f2;
     -fx-text-fill: #be123c;
+    -fx-border-color: #fecdd3;
+    -fx-border-radius: 20;
 }
 
 /* ==========================================================================
@@ -414,7 +473,7 @@
 }
 
 .step-icon {
-    -fx-font-size: 14px;
+    -fx-font-size: 13px;
     -fx-min-width: 26px;
     -fx-min-height: 26px;
     -fx-alignment: center;
@@ -429,20 +488,21 @@
 
 .step-title {
     -fx-font-size: 11px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
     -fx-text-fill: -text-main;
 }
 
 .step-meta {
     -fx-font-size: 10px;
+    -fx-font-weight: 500;
     -fx-text-fill: -text-muted;
 }
 
 .step-type-badge {
-    -fx-background-radius: 4;
-    -fx-padding: 2 6;
+    -fx-background-radius: 6;
+    -fx-padding: 2 7;
     -fx-font-size: 9px;
-    -fx-font-weight: 700;
+    -fx-font-weight: 800;
     -fx-text-fill: -text-muted;
     -fx-background-color: -bg-muted;
 }
@@ -451,10 +511,3 @@
 .badge-taksi { -fx-background-color: #fef9c3; -fx-text-fill: #854d0e; }
 .badge-yurume { -fx-background-color: #f1f5f9; -fx-text-fill: #475569; }
 .badge-transfer { -fx-background-color: #f3e8ff; -fx-text-fill: #6b21a8; }
-
-.empty-hint {
-    -fx-font-size: 12px;
-    -fx-text-fill: -text-muted;
-    -fx-wrap-text: true;
-    -fx-padding: 10;
-}

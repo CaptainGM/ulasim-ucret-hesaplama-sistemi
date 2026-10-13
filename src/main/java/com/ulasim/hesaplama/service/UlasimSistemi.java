@@ -186,20 +186,33 @@ public class UlasimSistemi {
         // Başlangıç noktasından ilk durağa ulaşım (Yürüme veya Taksi)
         ekleYurumeTaksiSegmenti(rota, baslangicDurak, enYakinBaslangicDuragi, trafik);
 
+        // İlk aracı durakta bekleme süresi (Headway): Otobüs ~5 dk, Tramvay ~3 dk
+        boolean ilkAracEklendi = false;
+
         // Toplu taşıma hattı segmentleri (Trafik katsayısı uygulanır)
         for (RotaSegmenti segment : topluTasimaYolu) {
             double duzeltilmisSure = segment.getSure();
             if ("otobus".equalsIgnoreCase(segment.getAracTipi())) {
                 duzeltilmisSure = segment.getSure() * trafik.getSureKatsayisi();
+                if (!ilkAracEklendi) {
+                    duzeltilmisSure += 4.0; // İlk binişte ortalama durak bekleme
+                    ilkAracEklendi = true;
+                }
+            } else if ("tramvay".equalsIgnoreCase(segment.getAracTipi())) {
+                if (!ilkAracEklendi) {
+                    duzeltilmisSure += 2.5; // Tramvay istasyon peron bekleme
+                    ilkAracEklendi = true;
+                }
+            } else if ("transfer".equalsIgnoreCase(segment.getTip())) {
+                duzeltilmisSure += 2.0; // Aktarma bekleme süresi payı
             }
-            // Tramvay raylı sistem olduğundan karayolu trafiğinden etkilenmez!
 
             RotaSegmenti duzeltilmisSegment = new RotaSegmenti(
                     segment.getTip(),
                     segment.getBaslangicDurak(),
                     segment.getBitisDurak(),
                     segment.getMesafe(),
-                    duzeltilmisSure,
+                    Math.round(duzeltilmisSure * 10.0) / 10.0,
                     segment.getUcret(),
                     segment.getAracTipi()
             );
@@ -220,13 +233,14 @@ public class UlasimSistemi {
         }
 
         if (mesafe <= MAKSIMUM_YURUME_MESAFESI) {
-            double sure = (mesafe / YURUME_HIZI) * 60;
-            rota.ekleSegment(new RotaSegmenti("yurume", baslangic, hedef, mesafe, sure, 0.0, "yurume"));
+            // Yaya yürüyüşü: 4.8 km/s + kavşak/ışık bekleme payı
+            double sure = (mesafe / 4.8) * 60 + (mesafe > 0.4 ? 1.5 : 0.5);
+            rota.ekleSegment(new RotaSegmenti("yurume", baslangic, hedef, mesafe, Math.round(sure * 10.0) / 10.0, 0.0, "yurume"));
         } else {
             Taksi taksi = new Taksi("TAX001");
             double ucret = taksi.ucretHesapla(mesafe, trafik);
             double sure = taksi.sureHesapla(mesafe, trafik);
-            rota.ekleSegment(new RotaSegmenti("taksi", baslangic, hedef, mesafe, sure, ucret, "taksi"));
+            rota.ekleSegment(new RotaSegmenti("taksi", baslangic, hedef, mesafe, Math.round(sure * 10.0) / 10.0, ucret, "taksi"));
         }
     }
 

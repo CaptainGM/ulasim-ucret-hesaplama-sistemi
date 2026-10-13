@@ -1,8 +1,9 @@
 {
   "city": "Izmit",
   "taxi": {
-    "openingFee": 10.0,
-    "costPerKm": 4.0
+    "openingFee": 35.0,
+    "costPerKm": 25.0,
+    "minimumFare": 100.0
   },
   "duraklar": [
     {
@@ -16,14 +17,14 @@
         {
           "stopId": "bus_sekapark",
           "mesafe": 3.5,
-          "sure": 10,
-          "ucret": 3.0
+          "sure": 12,
+          "ucret": 20.0
         }
       ],
       "transfer": {
         "transferStopId": "tram_otogar",
-        "transferSure": 2,
-        "transferUcret": 0.5
+        "transferSure": 3,
+        "transferUcret": 7.0
       }
     },
     {
@@ -38,19 +39,19 @@
           "stopId": "bus_yahyakaptan",
           "mesafe": 2.0,
           "sure": 8,
-          "ucret": 2.5
+          "ucret": 20.0
         },
         {
           "stopId": "bus_symbolavm",
           "mesafe": 4.0,
-          "sure": 12,
-          "ucret": 3.5
+          "sure": 14,
+          "ucret": 22.0
         },
         {
           "stopId": "bus_41burda",
           "mesafe": 4.5,
-          "sure": 14,
-          "ucret": 3.5
+          "sure": 16,
+          "ucret": 22.0
         }
       ],
       "transfer": {
@@ -70,8 +71,8 @@
         {
           "stopId": "bus_umuttepe",
           "mesafe": 5.0,
-          "sure": 12,
-          "ucret": 4.0
+          "sure": 18,
+          "ucret": 24.0
         }
       ],
       "transfer": {
@@ -90,7 +91,6 @@
       "nextStops": [],
       "transfer": null
     },
-
     {
       "id": "bus_symbolavm",
       "name": "Symbol AVM (Bus)",
@@ -111,7 +111,6 @@
       "nextStops": [],
       "transfer": null
     },
-
     {
       "id": "tram_otogar",
       "name": "Otogar (Tram)",
@@ -124,13 +123,13 @@
           "stopId": "tram_yahyakaptan",
           "mesafe": 1.2,
           "sure": 5,
-          "ucret": 2.5
+          "ucret": 18.0
         }
       ],
       "transfer": {
         "transferStopId": "bus_otogar",
-        "transferSure": 2,
-        "transferUcret": 0.5
+        "transferSure": 3,
+        "transferUcret": 7.0
       }
     },
     {
@@ -145,7 +144,7 @@
           "stopId": "tram_sekapark",
           "mesafe": 2.0,
           "sure": 6,
-          "ucret": 2.0
+          "ucret": 18.0
         }
       ],
       "transfer": {
@@ -166,7 +165,7 @@
           "stopId": "tram_halkevi",
           "mesafe": 3.0,
           "sure": 7,
-          "ucret": 1.5
+          "ucret": 18.0
         }
       ],
       "transfer": {
@@ -186,7 +185,7 @@
       "transfer": {
         "transferStopId": "bus_sekapark",
         "transferSure": 5,
-        "transferUcret": 0.5
+        "transferUcret": 7.0
       }
     }
   ]

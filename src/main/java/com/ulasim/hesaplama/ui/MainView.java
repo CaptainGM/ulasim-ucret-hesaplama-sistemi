@@ -176,20 +176,19 @@ public class MainView extends BorderPane {
         Label baslik = new Label("POPÜLER GÜZERGAHLAR");
         baslik.getStyleClass().add("section-mini-header");
 
-        HBox satir1 = new HBox(6);
+        HBox satir1 = new HBox(8);
         satir1.getChildren().addAll(
-                olusturPresetCip("Kampüs Hattı", 40.78259, 29.94628, "Otogar (Bus)", 40.82103, 29.91843, "Umuttepe (Bus)"),
-                olusturPresetCip("Sahil Parkı", 40.770965, 29.959499, "Yahya Kaptan (Bus)", 40.76520, 29.96190, "Sekapark (Bus)")
+                olusturPresetCip("🚌 Kampüs", 40.78259, 29.94628, "Otogar (Bus)", 40.82103, 29.91843, "Umuttepe (Bus)"),
+                olusturPresetCip("🌊 Sahil Parkı", 40.770965, 29.959499, "Yahya Kaptan (Bus)", 40.76520, 29.96190, "Sekapark (Bus)")
         );
 
-        HBox satir2 = new HBox(6);
+        HBox satir2 = new HBox(8);
         satir2.getChildren().addAll(
-                olusturPresetCip("AVM Hattı", 40.76350, 29.93870, "Halkevi (Tram)", 40.77788, 29.94991, "Symbol AVM (Bus)"),
-                olusturPresetCip("Raylı Sistem", 40.78245, 29.94610, "Otogar (Tram)", 40.76350, 29.93870, "Halkevi (Tram)")
+                olusturPresetCip("🏬 AVM Hattı", 40.76350, 29.93870, "Halkevi (Tram)", 40.77788, 29.94991, "Symbol AVM (Bus)"),
+                olusturPresetCip("⚡ Tramvay", 40.78245, 29.94610, "Otogar (Tram)", 40.76350, 29.93870, "Halkevi (Tram)")
         );
 
-
-        VBox box = new VBox(6, baslik, satir1, satir2);
+        VBox box = new VBox(8, baslik, satir1, satir2);
         box.getStyleClass().add("preset-card");
         return box;
     }
@@ -226,7 +225,10 @@ public class MainView extends BorderPane {
         swapBtn.getStyleClass().add("btn-swap");
         swapBtn.setOnAction(e -> noktalarıTakasEt());
 
-        VBox kart = new VBox(10, baslangicAlani, swapBtn, hedefAlani);
+        HBox swapKutusu = new HBox(swapBtn);
+        swapKutusu.setAlignment(Pos.CENTER);
+
+        VBox kart = new VBox(8, baslangicAlani, swapKutusu, hedefAlani);
         kart.getStyleClass().add("control-card");
         return kart;
     }
@@ -533,6 +535,53 @@ public class MainView extends BorderPane {
         } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    public void senaryoSec(int no) {
+        switch (no) {
+            case 1 -> {
+                baslangicLatField.setText(fmt6(40.78259));
+                baslangicLonField.setText(fmt6(29.94628));
+                baslangicAramaField.setText("Otogar (Bus)");
+                hedefLatField.setText(fmt6(40.82103));
+                hedefLonField.setText(fmt6(29.91843));
+                hedefAramaField.setText("Umuttepe (Bus)");
+            }
+            case 2 -> {
+                baslangicLatField.setText(fmt6(40.770965));
+                baslangicLonField.setText(fmt6(29.959499));
+                baslangicAramaField.setText("Yahya Kaptan (Bus)");
+                hedefLatField.setText(fmt6(40.76520));
+                hedefLonField.setText(fmt6(29.96190));
+                hedefAramaField.setText("Sekapark (Bus)");
+            }
+            case 3 -> {
+                baslangicLatField.setText(fmt6(40.76350));
+                baslangicLonField.setText(fmt6(29.93870));
+                baslangicAramaField.setText("Halkevi (Tram)");
+                hedefLatField.setText(fmt6(40.77788));
+                hedefLonField.setText(fmt6(29.94991));
+                hedefAramaField.setText("Symbol AVM (Bus)");
+            }
+            case 4 -> {
+                baslangicLatField.setText(fmt6(40.78245));
+                baslangicLonField.setText(fmt6(29.94610));
+                baslangicAramaField.setText("Otogar (Tram)");
+                hedefLatField.setText(fmt6(40.76350));
+                hedefLonField.setText(fmt6(29.93870));
+                hedefAramaField.setText("Halkevi (Tram)");
+            }
+            case 5 -> {
+                baslangicLatField.setText(fmt6(40.82103));
+                baslangicLonField.setText(fmt6(29.91843));
+                baslangicAramaField.setText("Umuttepe (Bus)");
+                hedefLatField.setText(fmt6(40.76350));
+                hedefLonField.setText(fmt6(29.93870));
+                hedefAramaField.setText("Halkevi (Tram)");
+            }
+        }
+        haritaMarkerlariniGuncelle();
+        rotaHesaplaButonuTiklandi();
     }
 
     private static String fmt6(double v) {

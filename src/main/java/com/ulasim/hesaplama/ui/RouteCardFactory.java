@@ -88,9 +88,10 @@ final class RouteCardFactory {
             segmentKutusu.getChildren().add(segmentTimelineSatiri(segment, yolcu, sonMu));
         }
 
-        // 5. Alt Bilgi & Harita Odaklama Aksiyonu
-        Label odaklaEtiketi = new Label("🗺️ Haritada Canlı Göster");
-        odaklaEtiketi.getStyleClass().add("route-action-link");
+        // 5. Alt Bilgi & Harita Odaklama Aksiyonu (Opensource UI Butonu)
+        javafx.scene.control.Button odaklaBtn = new javafx.scene.control.Button("🗺️ Haritada Göster →");
+        odaklaBtn.getStyleClass().add("btn-route-action");
+        odaklaBtn.setOnAction(e -> haritadaGoster.run());
 
         Region altSpacer = new Region();
         HBox.setHgrow(altSpacer, Priority.ALWAYS);
@@ -98,7 +99,7 @@ final class RouteCardFactory {
         Label detayBilgi = new Label(rota.getSegmentler().size() + " Adım");
         detayBilgi.getStyleClass().add("segment-meta");
 
-        HBox altSatir = new HBox(8, odaklaEtiketi, altSpacer, detayBilgi);
+        HBox altSatir = new HBox(8, odaklaBtn, altSpacer, detayBilgi);
         altSatir.setAlignment(Pos.CENTER_LEFT);
 
         VBox kart = new VBox(10, baslikSatiri, metrikSatiri);
