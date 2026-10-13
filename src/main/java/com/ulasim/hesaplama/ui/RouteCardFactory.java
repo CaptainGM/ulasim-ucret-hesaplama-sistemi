@@ -119,12 +119,17 @@ final class RouteCardFactory {
         ikonLabel.getStyleClass().addAll("step-icon", "step-icon-" + segment.getTip());
 
         // Segment Açıklaması
-        VBox detayKutusu = new VBox(2);
-        Label durakAdlari = new Label(segment.getBaslangicDurak().isim + " → " + segment.getBitisDurak().isim);
+        VBox detayKutusu = new VBox(3);
+        String bIsim = temizDurakAdi(segment.getBaslangicDurak().isim);
+        String hIsim = temizDurakAdi(segment.getBitisDurak().isim);
+        Label durakAdlari = new Label(bIsim + " ➔ " + hIsim);
         durakAdlari.getStyleClass().add("step-title");
 
         double indirimliUcret = yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
-        StringBuilder metaStr = new StringBuilder(String.format("%.1f km · %.0f dk", segment.getMesafe(), segment.getSure()));
+        StringBuilder metaStr = new StringBuilder();
+        metaStr.append(aracAciklamasi(segment.getTip(), segment.getAracTipi()));
+        metaStr.append(String.format(" · %.1f km · %.0f dk", segment.getMesafe(), segment.getSure()));
+        
         if (indirimliUcret > 0) {
             metaStr.append(String.format(" · %.2f TL", indirimliUcret));
         } else if (!segment.getTip().equals("yurume")) {
@@ -138,13 +143,37 @@ final class RouteCardFactory {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label tipRozeti = new Label(baslikMetni(segment.getTip()));
-        tipRozeti.getStyleClass().addAll("step-type-badge", "badge-" + segment.getTip());
-
-        HBox satir = new HBox(8, ikonLabel, detayKutusu, spacer, tipRozeti);
+        HBox satir = new HBox(10, ikonLabel, detayKutusu, spacer);
         satir.setAlignment(Pos.CENTER_LEFT);
-        satir.setPadding(new Insets(2, 0, 2, 0));
+        satir.setPadding(new Insets(4, 0, 4, 0));
         return satir;
+    }
+
+    private static String temizDurakAdi(String isim) {
+        if (isim == null) return "";
+        return isim
+                .replace("(Akçaray Tram)", "İstasyonu")
+                .replace("(Akçaray)", "İstasyonu")
+                .replace("(Terminal)", "")
+                .replace("(Merkez)", "")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    private static String aracAciklamasi(String tip, String aracTipi) {
+        if ("tramvay".equalsIgnoreCase(aracTipi) || "tramvay".equalsIgnoreCase(tip)) {
+            return "Tramvay";
+        }
+        if ("otobus".equalsIgnoreCase(aracTipi) || "otobus".equalsIgnoreCase(tip)) {
+            return "Belediye Otobüsü";
+        }
+        if ("taksi".equalsIgnoreCase(aracTipi) || "taksi".equalsIgnoreCase(tip)) {
+            return "Sarı Taksi";
+        }
+        if ("transfer".equalsIgnoreCase(tip)) {
+            return "İstasyon Aktarması";
+        }
+        return "Yürüyüş";
     }
 
     private static String rozetStiliSec(String rozet) {
@@ -163,17 +192,6 @@ final class RouteCardFactory {
             case "tramvay" -> "🚋";
             case "transfer" -> "🔄";
             default -> "📍";
-        };
-    }
-
-    private static String baslikMetni(String tip) {
-        return switch (tip) {
-            case "yurume" -> "Yürüme";
-            case "taksi" -> "Taksi";
-            case "otobus" -> "Otobüs";
-            case "tramvay" -> "Tramvay";
-            case "transfer" -> "Aktarma";
-            default -> tip;
         };
     }
 }

@@ -34,8 +34,9 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 ## ✨ Öne Çıkan Özellikler
 
 * **Kocaeli Popüler 43 Lokasyon Seçici:** Manuel koordinat girme zahmeti olmadan İzmit, Kartepe (Köseköy, Özdilek AVM, Maşukiye), Gölcük (Donanma, Değirmendere), Körfez (Tütünçiftlik, Yarımca, Hereke), Gebze (Center AVM, GTÜ), Darıca, Çayırova, Dilovası, Karamürsel ve Kandıra (Kerpe) gibi Kocaeli'nin 12 ilçesindeki tüm ana merkezleri açılır menüden tek tıkla seçme imkanı.
-* **Resmi Kocaeli UKOME Gerçekçi Tarifeleri:** Kocaeli Büyükşehir Belediyesi UKOME kararlarıyla tam uyumlu belediye otobüsü (42 TL), Akçaray tramvay (36 TL), taksimetre açılış (55 TL), km başı (55 TL) ve indi-bindi taban ücreti (200 TL).
-* **Aydınlık & Koyu Tema (Light / Dark Mode):** Tek tuşla geçiş yapılabilen `Carbon Midnight` koyu arayüzü ve büyüleyici **Esri World Imagery (Uzaydan HD Gece Uydu Görüntüsü & Altın Ulaşım Ağı)** harita altyapısı.
+* **Resmi Kocaeli UKOME Gerçekçi Tarifeleri:** Kocaeli Büyükşehir Belediyesi UKOME kararlarıyla tam uyumlu belediye otobüsü (42 TL), tramvay (36 TL), taksimetre açılış (55 TL), km başı (55 TL) ve indi-bindi taban ücreti (200 TL). Ara durak başına bilet kesme hatası giderilmiş olup, hat boyunca tek biniş ücreti kuralı ve KentKart aktarma indirimi tam uygulanır.
+* **Sadeleştirilmiş Rota Stepper Tasarımı:** Karmaşık ve tekrar eden ara durak kalabalığı yerine `Başlangıç Durağı ➔ Varış Durağı` formatında tek parça etap gösterimi; her etabın altında kullanılan araç (Tramvay, Belediye Otobüsü, Taksi, Yürüme), mesafe, süre ve net ücret dökümü.
+* **Aydınlık & Koyu Tema (Light / Dark Mode):** Tek tuşla geçiş yapılabilen `Carbon Midnight` koyu arayüzü (koyu modda yüksek kontrastlı neon ComboBox ve net form metinleri) ve büyüleyici **Esri World Imagery (Uzaydan HD Gece Uydu Görüntüsü & Altın Ulaşım Ağı)** harita altyapısı.
 * **Hızlı ve Filigransız Kurumsal Esri GIS:** API anahtarı gerektirmeyen, engellemesiz ve ışık hızında yüklenen harita motoru.
 * **Gerçek Sokak Geometrisi (OSRM):** Cetvel gibi düz çizgiler yerine caddeleri, bulvarları, kavşakları ve D-100/TEM otoyol güzergahlarını milimetrik takip eden gerçekçi rota çizimi.
 * **Otomatik Canlı Trafik Radarı:** Google Haritalar mantığında; anlık saat dilimine ve pik saat yoğunluklarına göre toplu taşıma ve taksi sürelerini dinamik analiz eden sistem.

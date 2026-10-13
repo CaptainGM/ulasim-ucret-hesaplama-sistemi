@@ -47,6 +47,16 @@ public class App extends Application {
             mainView.setDarkMode(true);
         }
 
+        String scrollProp = System.getProperty("scrollV");
+        if (scrollProp != null) {
+            try {
+                double v = Double.parseDouble(scrollProp);
+                javafx.animation.PauseTransition scrollWait = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(3.0));
+                scrollWait.setOnFinished(ev -> mainView.kaydir(v));
+                scrollWait.play();
+            } catch (Exception ignored) {}
+        }
+
         // Harita ve rotalar render edildikten sonra GitHub için güncel ekran görüntüsünü otomatik kaydet
         javafx.animation.PauseTransition autoShot = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(6.0));
         autoShot.setOnFinished(e -> {

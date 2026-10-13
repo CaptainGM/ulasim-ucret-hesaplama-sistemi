@@ -129,7 +129,7 @@ public class MainView extends BorderPane {
     private final ToggleGroup pickGroup = new ToggleGroup();
 
     // Aydınlık / Koyu Tema Butonu
-    private final Button temaBtn = new Button("🌙 Koyu");
+    private final Button temaBtn = new Button("Koyu Mod");
 
     // Servisler ve Bileşenler
     private final Geocoder geocoder = new Geocoder();
@@ -137,6 +137,7 @@ public class MainView extends BorderPane {
     private final VBox sonucKutusu = new VBox(10);
     private final Label yolcuBilgiEtiketi = new Label();
     private final VBox ozetKarti = new VBox(6);
+    private ScrollPane solScroll;
 
     public MainView(UlasimSistemi sistem) {
         this.sistem = sistem;
@@ -154,9 +155,15 @@ public class MainView extends BorderPane {
         });
     }
 
+    public void kaydir(double v) {
+        if (solScroll != null) {
+            Platform.runLater(() -> solScroll.setVvalue(v));
+        }
+    }
+
     private SplitPane olusturAnaDuzen() {
         VBox solPanelIcerik = olusturSolPanel();
-        ScrollPane solScroll = new ScrollPane(solPanelIcerik);
+        solScroll = new ScrollPane(solPanelIcerik);
         solScroll.setFitToWidth(true);
         solScroll.getStyleClass().add("sidebar-scroll");
 
@@ -251,13 +258,13 @@ public class MainView extends BorderPane {
 
         HBox satir2 = new HBox(8);
         satir2.getChildren().addAll(
-                olusturPresetCip("🌊 Sahil Parkı", 40.771600, 29.960100, "Yahya Kaptan (Merkez)", 40.760500, 29.914000, "Sekapark Kültür Alanı"),
-                olusturPresetCip("⚡ Tramvay Hattı", 40.776100, 29.974000, "Otogar (Akçaray Tram)", 40.763500, 29.938700, "Halkevi (Akçaray Tram)")
+                olusturPresetCip("🌊 Sahil Parkı", 40.775970, 29.974113, "İzmit Otogarı (Terminal)", 40.760500, 29.914000, "Sekapark Kültür Alanı"),
+                olusturPresetCip("⚡ Tramvay Hattı", 40.776100, 29.974000, "Otogar Tramvay İstasyonu", 40.763500, 29.938700, "Halkevi Tramvay İstasyonu")
         );
 
         HBox satir3 = new HBox(8);
         satir3.getChildren().addAll(
-                olusturPresetCip("🛍️ Özdilek AVM", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.738200, 30.003500, "Özdilek AVM (Kartepe)"),
+                olusturPresetCip("🏬 Özdilek AVM", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.738200, 30.003500, "Özdilek AVM (Kartepe)"),
                 olusturPresetCip("⚓ Gölcük Meydan", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.718500, 29.824000, "Gölcük Anıtpark Meydanı"),
                 olusturPresetCip("🏭 Gebze Center", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.798500, 29.439000, "Gebze Center AVM")
         );
@@ -313,7 +320,7 @@ public class MainView extends BorderPane {
 
         // Popüler Kocaeli Konumları Açılır Listesi (Hızlı Seçim)
         ComboBox<String> konumSecici = new ComboBox<>();
-        konumSecici.setPromptText("Seçiniz (43 Popüler Kocaeli Noktası)...");
+        konumSecici.setPromptText("📍 Popüler Noktalardan Seçin (43 Konum)...");
         konumSecici.setMaxWidth(Double.MAX_VALUE);
         konumSecici.getItems().add("-- Popüler Noktalardan Seçin --");
         for (PopulerKonum p : POPULER_KONUMLAR) {
@@ -651,9 +658,9 @@ public class MainView extends BorderPane {
                 hedefAramaField.setText("Kocaeli Şehir Hastanesi");
             }
             case 3 -> {
-                baslangicLatField.setText(fmt6(40.771600));
-                baslangicLonField.setText(fmt6(29.960100));
-                baslangicAramaField.setText("Yahya Kaptan (Merkez)");
+                baslangicLatField.setText(fmt6(40.775970));
+                baslangicLonField.setText(fmt6(29.974113));
+                baslangicAramaField.setText("İzmit Otogarı (Terminal)");
                 hedefLatField.setText(fmt6(40.760500));
                 hedefLonField.setText(fmt6(29.914000));
                 hedefAramaField.setText("Sekapark Kültür Alanı");
@@ -661,10 +668,10 @@ public class MainView extends BorderPane {
             case 4 -> {
                 baslangicLatField.setText(fmt6(40.776100));
                 baslangicLonField.setText(fmt6(29.974000));
-                baslangicAramaField.setText("Otogar (Akçaray Tram)");
+                baslangicAramaField.setText("Otogar Tramvay İstasyonu");
                 hedefLatField.setText(fmt6(40.763500));
                 hedefLonField.setText(fmt6(29.938700));
-                hedefAramaField.setText("Halkevi (Akçaray Tram)");
+                hedefAramaField.setText("Halkevi Tramvay İstasyonu");
             }
             case 5 -> {
                 baslangicLatField.setText(fmt6(40.763500));
@@ -709,11 +716,11 @@ public class MainView extends BorderPane {
                 if (!getScene().getRoot().getStyleClass().contains("dark-theme")) {
                     getScene().getRoot().getStyleClass().add("dark-theme");
                 }
-                temaBtn.setText("☀️ Aydınlık");
+                temaBtn.setText("Aydınlık Mod");
                 mapView.setTheme("dark");
             } else {
                 getScene().getRoot().getStyleClass().remove("dark-theme");
-                temaBtn.setText("🌙 Koyu");
+                temaBtn.setText("Koyu Mod");
                 mapView.setTheme("light");
             }
         }

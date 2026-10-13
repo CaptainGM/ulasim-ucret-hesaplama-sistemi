@@ -175,11 +175,14 @@ public class UlasimSistemi {
         Durak hedefDurak = new Durak("hedef", "Varış Konumu", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
 
         Dijkstra dijkstra = new Dijkstra(graf);
-        List<RotaSegmenti> topluTasimaYolu = dijkstra.enKisaYoluBul(enYakinBaslangicDuragi, enYakinHedefDuragi, kriterTipi);
+        List<RotaSegmenti> hamYol = dijkstra.enKisaYoluBul(enYakinBaslangicDuragi, enYakinHedefDuragi, kriterTipi);
 
-        if (topluTasimaYolu.isEmpty() && !enYakinBaslangicDuragi.equals(enYakinHedefDuragi)) {
+        if (hamYol.isEmpty() && !enYakinBaslangicDuragi.equals(enYakinHedefDuragi)) {
             return;
         }
+
+        // Ardışık durakları tek bir toplu taşıma etabında birleştir ve tek bilet ücreti uygula
+        List<RotaSegmenti> topluTasimaYolu = birlestirTopluTasimaSegmentleri(hamYol);
 
         Rota rota = new Rota(rotaAdi);
 
@@ -195,16 +198,16 @@ public class UlasimSistemi {
             if ("otobus".equalsIgnoreCase(segment.getAracTipi())) {
                 duzeltilmisSure = segment.getSure() * trafik.getSureKatsayisi();
                 if (!ilkAracEklendi) {
-                    duzeltilmisSure += 4.0; // İlk binişte ortalama durak bekleme
+                    duzeltilmisSure += 3.0; // İlk binişte ortalama durak bekleme
                     ilkAracEklendi = true;
                 }
             } else if ("tramvay".equalsIgnoreCase(segment.getAracTipi())) {
                 if (!ilkAracEklendi) {
-                    duzeltilmisSure += 2.5; // Tramvay istasyon peron bekleme
+                    duzeltilmisSure += 2.0; // Tramvay istasyon peron bekleme
                     ilkAracEklendi = true;
                 }
             } else if ("transfer".equalsIgnoreCase(segment.getTip())) {
-                duzeltilmisSure += 2.0; // Aktarma bekleme süresi payı
+                duzeltilmisSure += 1.5; // Aktarma bekleme süresi payı
             }
 
             RotaSegmenti duzeltilmisSegment = new RotaSegmenti(
@@ -224,6 +227,96 @@ public class UlasimSistemi {
         rota.setTrafikDurumu(trafik);
 
         rotalar.add(rota);
+    }
+
+    /**
+     * Aynı hat ve araçtaki ardışık durakları (örneğin 5 durak boyunca tramvay)
+     * tek bir kullanıcı dostu etaba birleştirir ve durak başı yerine TEK BİNİŞ ÜCRETİ uygular.
+     */
+    private List<RotaSegmenti> birlestirTopluTasimaSegmentleri(List<RotaSegmenti> hamSegmentler) {
+        if (hamSegmentler == null || hamSegmentler.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<RotaSegmenti> sonuc = new ArrayList<>();
+        boolean ilkBiletAlindi = false;
+
+        Durak baslangicAtlamaDuragi = null;
+
+        int i = 0;
+        while (i < hamSegmentler.size()) {
+            RotaSegmenti baslangicSeg = hamSegmentler.get(i);
+            String tip = baslangicSeg.getTip();
+            String arac = baslangicSeg.getAracTipi();
+
+            // Transfer / Yürüme segmentleri (0 TL)
+            if ("yurume".equalsIgnoreCase(tip) || "transfer".equalsIgnoreCase(tip)) {
+                if (baslangicSeg.getMesafe() < 0.05) {
+                    // Aynı peron/terminal içi ihmal edilebilir aktarma (< 50m)
+                    if (baslangicAtlamaDuragi == null) {
+                        baslangicAtlamaDuragi = baslangicSeg.getBaslangicDurak();
+                    }
+                    i++;
+                    continue;
+                }
+                sonuc.add(new RotaSegmenti(
+                        tip,
+                        baslangicSeg.getBaslangicDurak(),
+                        baslangicSeg.getBitisDurak(),
+                        baslangicSeg.getMesafe(),
+                        baslangicSeg.getSure(),
+                        0.0, // Transfer yürümesi ücretsizdir
+                        tip
+                ));
+                i++;
+                continue;
+            }
+
+            // Ardışık aynı aracı birleştir
+            Durak ilkDurak = (baslangicAtlamaDuragi != null) ? baslangicAtlamaDuragi : baslangicSeg.getBaslangicDurak();
+            baslangicAtlamaDuragi = null;
+            Durak sonDurak = baslangicSeg.getBitisDurak();
+            double toplamMesafe = baslangicSeg.getMesafe();
+            double toplamSure = baslangicSeg.getSure();
+
+            // İlk binişte tam tarife (Tramvay 36 TL, Otobüs 42 TL), aktarmada indirimli (12 TL)
+            double biletUcreti;
+            if (!ilkBiletAlindi) {
+                biletUcreti = "tramvay".equalsIgnoreCase(arac) ? 36.0 : 42.0;
+                ilkBiletAlindi = true;
+            } else {
+                biletUcreti = 12.0; // Kocaeli KentKart UKOME aktarma ücreti
+            }
+
+            int j = i + 1;
+            while (j < hamSegmentler.size()) {
+                RotaSegmenti sonraki = hamSegmentler.get(j);
+                if (sonraki.getAracTipi().equalsIgnoreCase(arac) &&
+                    !"transfer".equalsIgnoreCase(sonraki.getTip()) &&
+                    !"yurume".equalsIgnoreCase(sonraki.getTip())) {
+                    toplamMesafe += sonraki.getMesafe();
+                    toplamSure += sonraki.getSure();
+                    sonDurak = sonraki.getBitisDurak();
+                    j++;
+                } else {
+                    break;
+                }
+            }
+
+            sonuc.add(new RotaSegmenti(
+                    tip,
+                    ilkDurak,
+                    sonDurak,
+                    Math.round(toplamMesafe * 100.0) / 100.0,
+                    Math.round(toplamSure * 10.0) / 10.0,
+                    biletUcreti, // Durak sayısından bağımsız TEK BİNİŞ ÜCRETİ
+                    arac
+            ));
+
+            i = j;
+        }
+
+        return sonuc;
     }
 
     private void ekleYurumeTaksiSegmenti(Rota rota, Durak baslangic, Durak hedef, TrafikDurumu trafik) {

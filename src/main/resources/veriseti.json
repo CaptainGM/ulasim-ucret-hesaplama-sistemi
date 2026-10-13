@@ -266,7 +266,7 @@
 
     {
       "id": "tram_otogar",
-      "name": "Otogar (Akçaray Tram)",
+      "name": "Otogar Tramvay İstasyonu",
       "type": "tram",
       "lat": 40.77610,
       "lon": 29.97400,
@@ -277,12 +277,12 @@
       "transfer": {
         "transferStopId": "bus_otogar",
         "transferSure": 2,
-        "transferUcret": 12.0
+        "transferUcret": 0.0
       }
     },
     {
       "id": "tram_yahyakaptan",
-      "name": "Yahya Kaptan (Akçaray Tram)",
+      "name": "Yahya Kaptan İstasyonu",
       "type": "tram",
       "lat": 40.77160,
       "lon": 29.96010,
@@ -299,7 +299,7 @@
     },
     {
       "id": "tram_dogukisla",
-      "name": "Doğu Kışla (Akçaray Tram)",
+      "name": "Doğu Kışla İstasyonu",
       "type": "tram",
       "lat": 40.76800,
       "lon": 29.95300,
@@ -316,7 +316,7 @@
     },
     {
       "id": "tram_anitpark",
-      "name": "Anıtpark (Akçaray Tram)",
+      "name": "Anıtpark İstasyonu",
       "type": "tram",
       "lat": 40.76750,
       "lon": 29.94050,
@@ -333,7 +333,7 @@
     },
     {
       "id": "tram_halkevi",
-      "name": "Halkevi (Akçaray Tram)",
+      "name": "Halkevi Tramvay İstasyonu",
       "type": "tram",
       "lat": 40.76350,
       "lon": 29.93870,
@@ -345,12 +345,12 @@
       "transfer": {
         "transferStopId": "bus_halkevi",
         "transferSure": 1,
-        "transferUcret": 12.0
+        "transferUcret": 0.0
       }
     },
     {
       "id": "tram_sekapark",
-      "name": "Sekapark (Akçaray Tram)",
+      "name": "Sekapark Tramvay İstasyonu",
       "type": "tram",
       "lat": 40.76050,
       "lon": 29.91400,
@@ -367,7 +367,7 @@
     },
     {
       "id": "tram_plajyolu",
-      "name": "Plajyolu (Akçaray Tram)",
+      "name": "Plajyolu İstasyonu",
       "type": "tram",
       "lat": 40.75800,
       "lon": 29.90200,
@@ -384,7 +384,7 @@
     },
     {
       "id": "tram_kurucesme",
-      "name": "Kuruçeşme (Akçaray Tram)",
+      "name": "Kuruçeşme İstasyonu",
       "type": "tram",
       "lat": 40.76500,
       "lon": 29.88800,
