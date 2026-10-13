@@ -21,11 +21,11 @@ if "%1"=="--build" set "NEED_BUILD=1"
 if "%1"=="-b" set "NEED_BUILD=1"
 
 if "!NEED_BUILD!"=="1" (
-    echo [1/2] Uygulama derleniyor (ilk calistirmada bagimliliklar hazirlaniyor)...
+    echo [1/2] Uygulama derleniyor...
     call ".\mvnw.cmd" -q package
     if errorlevel 1 (
         echo.
-        echo Derleme sirasinda hata olustu. Yukaridaki mesajlari kontrol edin.
+        echo Derleme sirasinda hata olustu.
         pause
         exit /b 1
     )
@@ -38,6 +38,5 @@ if "!NEED_BUILD!"=="1" (
 
 if errorlevel 1 (
     echo.
-    echo Uygulama calisirken bir hata olustu.
-    pause
+    echo Uygulama sonlandi.
 )

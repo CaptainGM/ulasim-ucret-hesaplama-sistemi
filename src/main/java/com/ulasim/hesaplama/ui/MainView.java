@@ -47,26 +47,49 @@ import java.util.Locale;
  * Modern kent içi ulaşım ve çok modlu rota optimizasyon dashboard arayüzü.
  */
 public class MainView extends BorderPane {
+    public record PopulerKonum(String ad, double lat, double lon) {}
+
+    public static final List<PopulerKonum> POPULER_KONUMLAR = List.of(
+            new PopulerKonum("İzmit Otogarı (Terminal)", 40.775970, 29.974113),
+            new PopulerKonum("KOÜ Umuttepe Kampüsü", 40.824562, 29.921665),
+            new PopulerKonum("Kocaeli Şehir Hastanesi", 40.782254, 29.957500),
+            new PopulerKonum("Halkevi (İzmit Merkez)", 40.763500, 29.938700),
+            new PopulerKonum("Sekapark Kültür Alanı", 40.760500, 29.914000),
+            new PopulerKonum("Yahya Kaptan (Merkez)", 40.771600, 29.960100),
+            new PopulerKonum("Symbol AVM & Medikal", 40.777880, 29.949910),
+            new PopulerKonum("41 Burda AVM", 40.777310, 29.925120),
+            new PopulerKonum("Outlet Center & Fuar", 40.751000, 29.930000),
+            new PopulerKonum("Doğu Kışla Parkı", 40.768000, 29.953000),
+            new PopulerKonum("KOÜ Anıtpark Yerleşkesi", 40.767500, 29.940500),
+            new PopulerKonum("Plajyolu Sahil", 40.758000, 29.902000),
+            new PopulerKonum("Kuruçeşme (Merkez)", 40.765000, 29.888000),
+            new PopulerKonum("Kocaeli Stadyumu (Alikahya)", 40.768500, 29.992000),
+            new PopulerKonum("Yuvam Akarca Konutları", 40.776000, 29.980000),
+            new PopulerKonum("Başiskele Sahil Parkı", 40.725000, 29.928000)
+    );
+
     private final UlasimSistemi sistem;
     private final Collection<Durak> duraklar;
 
-    // Başlangıç ve Varış Koordinatları (Varsayılan: Otogar -> Umuttepe)
-    private final TextField baslangicAramaField = new TextField("Otogar (Bus)");
-    private final TextField hedefAramaField = new TextField("Umuttepe (Bus)");
-    private final TextField baslangicLatField = new TextField("40.78259");
-    private final TextField baslangicLonField = new TextField("29.94628");
-    private final TextField hedefLatField = new TextField("40.82103");
-    private final TextField hedefLonField = new TextField("29.91843");
+    // Başlangıç ve Varış Koordinatları (Gerçek İzmit Otogarı -> KOÜ Umuttepe Kampüsü)
+    private final TextField baslangicAramaField = new TextField("İzmit Otogarı (Terminal)");
+    private final TextField hedefAramaField = new TextField("KOÜ Umuttepe Kampüsü");
+    private final TextField baslangicLatField = new TextField("40.775970");
+    private final TextField baslangicLonField = new TextField("29.974113");
+    private final TextField hedefLatField = new TextField("40.824562");
+    private final TextField hedefLonField = new TextField("29.921665");
 
     // Parametre Kontrolleri
     private final ComboBox<String> yolcuTipiBox = new ComboBox<>();
     private final ComboBox<String> odemeYontemiBox = new ComboBox<>();
 
-
     // Harita Seçim Butonları
-    private final ToggleButton secBaslangicToggle = new ToggleButton("📍 Haritadan Seç");
-    private final ToggleButton secHedefToggle = new ToggleButton("🎯 Haritadan Seç");
+    private final ToggleButton secBaslangicToggle = new ToggleButton("📍 Haritadan");
+    private final ToggleButton secHedefToggle = new ToggleButton("🎯 Haritadan");
     private final ToggleGroup pickGroup = new ToggleGroup();
+
+    // Aydınlık / Koyu Tema Butonu
+    private final Button temaBtn = new Button("🌙 Koyu");
 
     // Servisler ve Bileşenler
     private final Geocoder geocoder = new Geocoder();
@@ -90,8 +113,6 @@ public class MainView extends BorderPane {
             });
         });
     }
-
-
 
     private SplitPane olusturAnaDuzen() {
         VBox solPanelIcerik = olusturSolPanel();
@@ -156,21 +177,27 @@ public class MainView extends BorderPane {
         Label appTitle = new Label("TransitRoute");
         appTitle.getStyleClass().add("brand-title");
 
-        Label appSubtitle = new Label("Akıllı Kentsel Rota & Ücret Optimizasyonu");
+        Label appSubtitle = new Label("Kocaeli Akıllı Rota & UKOME Tarifesi");
         appSubtitle.getStyleClass().add("brand-subtitle");
         baslikKutusu.getChildren().addAll(appTitle, appSubtitle);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label versiyonBadge = new Label("v2.0 • Canlı");
+        // Aydınlık / Koyu Tema Butonu
+        temaBtn.getStyleClass().add("btn-theme-toggle");
+        temaBtn.setOnAction(e -> {
+            boolean koyuMu = getScene().getRoot().getStyleClass().contains("dark-theme");
+            setDarkMode(!koyuMu);
+        });
+
+        Label versiyonBadge = new Label("v2.5 • Canlı");
         versiyonBadge.getStyleClass().addAll("badge-pill", "badge-eco");
 
-        HBox header = new HBox(8, logoIcon, baslikKutusu, spacer, versiyonBadge);
+        HBox header = new HBox(8, logoIcon, baslikKutusu, spacer, temaBtn, versiyonBadge);
         header.setAlignment(Pos.CENTER_LEFT);
         return header;
     }
-
 
     private VBox olusturPresetKutusu() {
         Label baslik = new Label("POPÜLER GÜZERGAHLAR");
@@ -178,14 +205,14 @@ public class MainView extends BorderPane {
 
         HBox satir1 = new HBox(8);
         satir1.getChildren().addAll(
-                olusturPresetCip("🚌 Kampüs", 40.78259, 29.94628, "Otogar (Bus)", 40.82103, 29.91843, "Umuttepe (Bus)"),
-                olusturPresetCip("🌊 Sahil Parkı", 40.770965, 29.959499, "Yahya Kaptan (Bus)", 40.76520, 29.96190, "Sekapark (Bus)")
+                olusturPresetCip("🚌 Kampüs", 40.775970, 29.974113, "İzmit Otogarı (Terminal)", 40.824562, 29.921665, "KOÜ Umuttepe Kampüsü"),
+                olusturPresetCip("🏥 Şehir Hastanesi", 40.775970, 29.974113, "İzmit Otogarı (Terminal)", 40.782254, 29.957500, "Kocaeli Şehir Hastanesi")
         );
 
         HBox satir2 = new HBox(8);
         satir2.getChildren().addAll(
-                olusturPresetCip("🏬 AVM Hattı", 40.76350, 29.93870, "Halkevi (Tram)", 40.77788, 29.94991, "Symbol AVM (Bus)"),
-                olusturPresetCip("⚡ Tramvay", 40.78245, 29.94610, "Otogar (Tram)", 40.76350, 29.93870, "Halkevi (Tram)")
+                olusturPresetCip("🌊 Sahil Parkı", 40.771600, 29.960100, "Yahya Kaptan (Merkez)", 40.760500, 29.914000, "Sekapark Kültür Alanı"),
+                olusturPresetCip("⚡ Tramvay Hattı", 40.776100, 29.974000, "Otogar (Akçaray Tram)", 40.763500, 29.938700, "Halkevi (Akçaray Tram)")
         );
 
         VBox box = new VBox(8, baslik, satir1, satir2);
@@ -237,7 +264,28 @@ public class MainView extends BorderPane {
         Label label = new Label(ikon + " " + baslik);
         label.getStyleClass().add("field-label");
 
-        aramaField.setPromptText(baslik + " (durak veya adres yazın)...");
+        // Popüler Kocaeli Konumları Açılır Listesi (Hızlı Seçim)
+        ComboBox<String> konumSecici = new ComboBox<>();
+        konumSecici.setPromptText("Seçiniz (16 Popüler Nokta)...");
+        konumSecici.setMaxWidth(Double.MAX_VALUE);
+        konumSecici.getItems().add("-- Popüler Noktalardan Seçin --");
+        for (PopulerKonum p : POPULER_KONUMLAR) {
+            konumSecici.getItems().add(p.ad);
+        }
+        konumSecici.setOnAction(e -> {
+            String secim = konumSecici.getValue();
+            if (secim != null && !secim.startsWith("--")) {
+                POPULER_KONUMLAR.stream().filter(p -> p.ad.equals(secim)).findFirst().ifPresent(p -> {
+                    aramaField.setText(p.ad);
+                    latField.setText(fmt6(p.lat));
+                    lonField.setText(fmt6(p.lon));
+                    haritaMarkerlariniGuncelle();
+                    rotaHesaplaButonuTiklandi();
+                });
+            }
+        });
+
+        aramaField.setPromptText(baslik + " (manuel adres yazın)...");
         HBox.setHgrow(aramaField, Priority.ALWAYS);
 
         Button araBtn = new Button("🔍");
@@ -258,7 +306,7 @@ public class MainView extends BorderPane {
         koordinatSatir.setAlignment(Pos.CENTER_LEFT);
         koordinatSatir.getStyleClass().add("coord-row");
 
-        return new VBox(5, label, inputSatir, koordinatSatir);
+        return new VBox(5, label, konumSecici, inputSatir, koordinatSatir);
     }
 
     private void noktalarıTakasEt() {
@@ -540,48 +588,64 @@ public class MainView extends BorderPane {
     public void senaryoSec(int no) {
         switch (no) {
             case 1 -> {
-                baslangicLatField.setText(fmt6(40.78259));
-                baslangicLonField.setText(fmt6(29.94628));
-                baslangicAramaField.setText("Otogar (Bus)");
-                hedefLatField.setText(fmt6(40.82103));
-                hedefLonField.setText(fmt6(29.91843));
-                hedefAramaField.setText("Umuttepe (Bus)");
+                baslangicLatField.setText(fmt6(40.775970));
+                baslangicLonField.setText(fmt6(29.974113));
+                baslangicAramaField.setText("İzmit Otogarı (Terminal)");
+                hedefLatField.setText(fmt6(40.824562));
+                hedefLonField.setText(fmt6(29.921665));
+                hedefAramaField.setText("KOÜ Umuttepe Kampüsü");
             }
             case 2 -> {
-                baslangicLatField.setText(fmt6(40.770965));
-                baslangicLonField.setText(fmt6(29.959499));
-                baslangicAramaField.setText("Yahya Kaptan (Bus)");
-                hedefLatField.setText(fmt6(40.76520));
-                hedefLonField.setText(fmt6(29.96190));
-                hedefAramaField.setText("Sekapark (Bus)");
+                baslangicLatField.setText(fmt6(40.775970));
+                baslangicLonField.setText(fmt6(29.974113));
+                baslangicAramaField.setText("İzmit Otogarı (Terminal)");
+                hedefLatField.setText(fmt6(40.782254));
+                hedefLonField.setText(fmt6(29.957500));
+                hedefAramaField.setText("Kocaeli Şehir Hastanesi");
             }
             case 3 -> {
-                baslangicLatField.setText(fmt6(40.76350));
-                baslangicLonField.setText(fmt6(29.93870));
-                baslangicAramaField.setText("Halkevi (Tram)");
-                hedefLatField.setText(fmt6(40.77788));
-                hedefLonField.setText(fmt6(29.94991));
-                hedefAramaField.setText("Symbol AVM (Bus)");
+                baslangicLatField.setText(fmt6(40.771600));
+                baslangicLonField.setText(fmt6(29.960100));
+                baslangicAramaField.setText("Yahya Kaptan (Merkez)");
+                hedefLatField.setText(fmt6(40.760500));
+                hedefLonField.setText(fmt6(29.914000));
+                hedefAramaField.setText("Sekapark Kültür Alanı");
             }
             case 4 -> {
-                baslangicLatField.setText(fmt6(40.78245));
-                baslangicLonField.setText(fmt6(29.94610));
-                baslangicAramaField.setText("Otogar (Tram)");
-                hedefLatField.setText(fmt6(40.76350));
-                hedefLonField.setText(fmt6(29.93870));
-                hedefAramaField.setText("Halkevi (Tram)");
+                baslangicLatField.setText(fmt6(40.776100));
+                baslangicLonField.setText(fmt6(29.974000));
+                baslangicAramaField.setText("Otogar (Akçaray Tram)");
+                hedefLatField.setText(fmt6(40.763500));
+                hedefLonField.setText(fmt6(29.938700));
+                hedefAramaField.setText("Halkevi (Akçaray Tram)");
             }
             case 5 -> {
-                baslangicLatField.setText(fmt6(40.82103));
-                baslangicLonField.setText(fmt6(29.91843));
-                baslangicAramaField.setText("Umuttepe (Bus)");
-                hedefLatField.setText(fmt6(40.76350));
-                hedefLonField.setText(fmt6(29.93870));
-                hedefAramaField.setText("Halkevi (Tram)");
+                baslangicLatField.setText(fmt6(40.763500));
+                baslangicLonField.setText(fmt6(29.938700));
+                baslangicAramaField.setText("Halkevi (İzmit Merkez)");
+                hedefLatField.setText(fmt6(40.777310));
+                hedefLonField.setText(fmt6(29.925120));
+                hedefAramaField.setText("41 Burda AVM");
             }
         }
         haritaMarkerlariniGuncelle();
         rotaHesaplaButonuTiklandi();
+    }
+
+    public void setDarkMode(boolean dark) {
+        if (getScene() != null && getScene().getRoot() != null) {
+            if (dark) {
+                if (!getScene().getRoot().getStyleClass().contains("dark-theme")) {
+                    getScene().getRoot().getStyleClass().add("dark-theme");
+                }
+                temaBtn.setText("☀️ Aydınlık");
+                mapView.setTheme("dark");
+            } else {
+                getScene().getRoot().getStyleClass().remove("dark-theme");
+                temaBtn.setText("🌙 Koyu");
+                mapView.setTheme("light");
+            }
+        }
     }
 
     private static String fmt6(double v) {

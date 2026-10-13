@@ -47,6 +47,142 @@
 }
 
 /* ==========================================================================
+   Koyu Tema (Dark Theme) — Opensource UI Carbon Midnight Paleti
+   ========================================================================== */
+
+.root.dark-theme {
+    -bg-app: #090d16;
+    -bg-surface: #111827;
+    -bg-sidebar: #0b1120;
+    -bg-muted: #1f2937;
+    -bg-card-hover: #1e293b;
+
+    -primary: #3b82f6;
+    -primary-hover: #60a5fa;
+    -primary-active: #2563eb;
+    -primary-light: #1e293b;
+
+    -emerald: #10b981;
+    -emerald-light: #064e3b;
+    -emerald-border: #047857;
+    -emerald-dark: #a7f3d0;
+
+    -amber: #f59e0b;
+    -amber-light: #78350f;
+    -amber-border: #b45309;
+    -amber-dark: #fde68a;
+
+    -rose: #ef4444;
+    -rose-light: #7f1d1d;
+    -rose-dark: #fca5a5;
+
+    -text-main: #f8fafc;
+    -text-body: #cbd5e1;
+    -text-muted: #94a3b8;
+    -text-light: #64748b;
+
+    -border-subtle: #1f2937;
+    -border-card: #1f2937;
+    -border-focus: #60a5fa;
+
+    -fx-background-color: -bg-app;
+}
+
+.btn-theme-toggle {
+    -fx-background-color: -bg-muted;
+    -fx-text-fill: -text-main;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 20;
+    -fx-border-width: 1;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 4, 0, 0, 1);
+}
+.btn-theme-toggle:hover {
+    -fx-background-color: -primary-light;
+    -fx-text-fill: -primary;
+    -fx-border-color: -primary;
+}
+
+.root.dark-theme .control-card {
+    -fx-background-color: #111827;
+    -fx-border-color: #1f2937;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 12, 0, 0, 3);
+}
+
+.root.dark-theme .preset-card {
+    -fx-background-color: #0d1322;
+    -fx-border-color: #1f2937;
+}
+
+.root.dark-theme .preset-chip {
+    -fx-background-color: #162033;
+    -fx-text-fill: #e2e8f0;
+    -fx-border-color: #27354f;
+}
+.root.dark-theme .preset-chip:hover {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #93c5fd;
+    -fx-border-color: #3b82f6;
+}
+
+.root.dark-theme .text-field,
+.root.dark-theme .combo-box {
+    -fx-background-color: #162033;
+    -fx-border-color: #27354f;
+    -fx-text-fill: #f8fafc;
+}
+
+.root.dark-theme .btn-swap,
+.root.dark-theme .button-toggle {
+    -fx-background-color: #162033;
+    -fx-text-fill: #cbd5e1;
+    -fx-border-color: #27354f;
+}
+
+.root.dark-theme .summary-card {
+    -fx-background-color: linear-gradient(to bottom right, #111c33, #0e2423);
+    -fx-border-color: #1e3a5f;
+}
+.root.dark-theme .summary-title {
+    -fx-text-fill: #93c5fd;
+}
+.root.dark-theme .summary-body {
+    -fx-text-fill: #e2e8f0;
+}
+
+.root.dark-theme .traffic-live-badge {
+    -fx-background-color: #2d1e08;
+    -fx-text-fill: #fde68a;
+    -fx-border-color: #78350f;
+}
+
+.root.dark-theme .route-card {
+    -fx-background-color: #111827;
+    -fx-border-color: #1f2937;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 12, 0, 0, 3);
+}
+.root.dark-theme .route-card:hover {
+    -fx-background-color: #162033;
+    -fx-border-color: #3b82f6;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.25), 18, 0, 0, 5);
+}
+
+.root.dark-theme .btn-route-action {
+    -fx-background-color: #162033;
+    -fx-text-fill: #60a5fa;
+    -fx-border-color: #27354f;
+}
+.root.dark-theme .btn-route-action:hover {
+    -fx-background-color: #2563eb;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #2563eb;
+}
+
+/* ==========================================================================
    Sidebar & Layout
    ========================================================================== */
 

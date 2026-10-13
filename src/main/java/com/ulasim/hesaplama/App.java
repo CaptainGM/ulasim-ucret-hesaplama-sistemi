@@ -41,6 +41,13 @@ public class App extends Application {
             } catch (Exception ignored) {}
         }
 
+        String themeProp = System.getProperty("theme");
+        if ("dark".equalsIgnoreCase(themeProp)) {
+            javafx.animation.PauseTransition themeWait = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
+            themeWait.setOnFinished(ev -> mainView.setDarkMode(true));
+            themeWait.play();
+        }
+
         // Harita ve rotalar render edildikten sonra GitHub için güncel ekran görüntüsünü otomatik kaydet
         javafx.animation.PauseTransition autoShot = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(6.0));
         autoShot.setOnFinished(e -> {

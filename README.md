@@ -15,7 +15,9 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 
 ## 📸 Uygulama Arayüzü
 
-![TransitRoute Arayüzü](screenshot.png)
+| ☀️ Aydınlık Mod (Esri World Street Map) | 🌙 Koyu Mod (Carbon Midnight & Night Map) |
+|:---:|:---:|
+| ![Aydınlık Mod](screenshot.png) | ![Koyu Mod](docs/dark-mode.png) |
 
 ### 🖼️ Popüler Güzergah Senaryoları
 
@@ -23,7 +25,7 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 |:---:|:---:|
 | ![Kampüs](docs/01-kampus-hatti.png) | ![Sahil](docs/02-sahil-parki.png) |
 
-| 🏬 AVM Hattı (Halkevi ➔ Symbol AVM) | ⚡ Tramvay Hattı (Otogar ➔ Halkevi) |
+| 🏬 AVM Hattı (Halkevi ➔ 41 Burda) | ⚡ Tramvay Hattı (Otogar ➔ Halkevi) |
 |:---:|:---:|
 | ![AVM](docs/03-avm-hatti.png) | ![Raylı](docs/04-rayli-sistem.png) |
 
@@ -31,12 +33,13 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 
 ## ✨ Öne Çıkan Özellikler
 
-* **Gerçek Sokak Geometrisi (OSRM):** Cetvel gibi düz çizgiler yerine caddeleri, virajları ve kavşakları takip eden gerçek dünya rotalaması.
-* **Otomatik Canlı Trafik Radarı:** Google Haritalar mantığında; yerel saat ve pik saat modellerini otomatik tarar, toplu taşıma ve taksi sürelerini dinamik günceller.
-* **Gerçekçi 2026 Ulaşım Tarifesi:** Güncel taksimetre açılışı (35 TL), km ücreti (25 TL), indi-bindi taban kuralı (100 TL) ve durak bekleme/aktarma süreleri.
-* **Opensource UI Tasarım Çizgisi:** Tactile 3D butonlar, yüzen hap etiketler (*floating pills*), derinlikli gölgeler ve modern kart mimarisi.
-* **Çok Modlu Dijkstra Optimizasyonu:** Raylı sistem, otobüs, taksi ve yürüme etaplarını hem en hızlı hem de en ekonomik kriterlere göre çözer.
-* **Kişiselleştirilmiş Tarifeler:** Öğrenci (%50 indirim), Yaşlı ve Genel yolcu modelleri; KentKart, Kredi Kartı ve Nakit ödeme stratejileri.
+* **Kocaeli Popüler 16 Lokasyon Seçici:** Manuel koordinat girme zorunluluğu olmadan İzmit Otogarı, KOÜ Umuttepe Kampüsü, Kocaeli Şehir Hastanesi, Sekapark, Yahya Kaptan, Sembol AVM, 41 Burda ve Outlet Center gibi popüler noktalara açılır menüden tek tıkla rota oluşturma.
+* **Resmi Kocaeli UKOME Gerçekçi Tarifeleri:** Kocaeli Büyükşehir Belediyesi UKOME kararlarıyla tam uyumlu belediye otobüsü (42 TL), Akçaray tramvay (36 TL), taksimetre açılış (55 TL), km başı (55 TL) ve indi-bindi taban ücreti (200 TL).
+* **Aydınlık & Koyu Tema (Light / Dark Mode):** Tek tuşla geçiş yapılabilen `Carbon Midnight` koyu teması ve Esri Dark Gray gece haritası desteği.
+* **Hızlı ve Filigransız Esri GIS Haritası:** Engellemesiz, yüksek performanslı ve akıcı harita katmanı.
+* **Gerçek Sokak Geometrisi (OSRM):** Cetvel gibi düz çizgiler yerine caddeleri, bulvarları ve kavşakları takip eden kesintisiz cadde geometrisi.
+* **Otomatik Canlı Trafik Radarı:** Google Haritalar mantığında; anlık saat dilimine ve pik saat yoğunluklarına göre toplu taşıma ve taksi sürelerini dinamik analiz eden sistem.
+* **Çok Modlu Dijkstra Optimizasyonu:** Tramvay, otobüs, taksi ve yürüme etaplarını en hızlı ve en ekonomik kriterlere göre çözer.
 * **Çevre & Bütçe Analitiği:** Direkt taksiye kıyasla tasarruf edilen TL, önlenen CO₂ salımı (gram) ve harcanan kalori (kcal).
 
 ---

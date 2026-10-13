@@ -13,6 +13,11 @@
     padding: 0;
     background-color: #f1f5f9;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+  }
+
+  body.theme-dark, body.theme-dark #map, body.theme-dark .leaflet-container {
+    background-color: #090d16 !important;
   }
 
   /* JavaFX WebView için donanım/zoom uyumluluk stilleri */
@@ -80,6 +85,15 @@
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     padding: 2px;
     font-family: inherit;
+    background: #ffffff;
+  }
+  body.theme-dark .leaflet-popup-content-wrapper {
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #334155;
+  }
+  body.theme-dark .leaflet-popup-tip {
+    background: #1e293b;
   }
   .leaflet-popup-content {
     margin: 12px 14px;
@@ -99,6 +113,9 @@
     font-weight: 700;
     color: #0f172a;
     margin: 0;
+  }
+  body.theme-dark .popup-title {
+    color: #f8fafc;
   }
   .popup-badge {
     display: inline-block;
@@ -153,7 +170,7 @@
     color: #ffffff;
   }
 
-  /* Harita Lejantı */
+  /* Harita Lejantı (Türkçe Karakter Desteği & Tema Uyumu) */
   .map-legend {
     position: absolute;
     bottom: 24px;
@@ -168,16 +185,24 @@
     font-size: 11px;
     color: #334155;
     pointer-events: none;
+    transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  }
+  body.theme-dark .map-legend {
+    background: rgba(15, 23, 42, 0.92);
+    color: #f1f5f9;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
   }
   .legend-item {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin: 3px 0;
+    gap: 8px;
+    margin: 4px 0;
+    font-weight: 600;
   }
   .legend-line {
-    width: 18px;
-    height: 4px;
+    width: 20px;
+    height: 5px;
     border-radius: 2px;
   }
 </style>
@@ -186,48 +211,81 @@
 <div id="map"></div>
 
 <div class="map-legend">
-  <div class="legend-item"><div class="legend-line" style="background:#2563eb;"></div><span>Otobüs Hattı</span></div>
-  <div class="legend-item"><div class="legend-line" style="background:#f97316;"></div><span>Tramvay Hattı</span></div>
-  <div class="legend-item"><div class="legend-line" style="background:#eab308;"></div><span>Taksi Güzergahı</span></div>
-  <div class="legend-item"><div class="legend-line" style="border-top:2px dashed #64748b;height:0;"></div><span>Yürüyüş / Aktarma</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#10b981;box-shadow:0 0 0 1.5px #0f172a;"></div><span>Ak&#305;c&#305; Trafik</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#f59e0b;box-shadow:0 0 0 1.5px #0f172a;"></div><span>Orta Trafik</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#ef4444;box-shadow:0 0 0 1.5px #0f172a;"></div><span>Yo&#287;un Trafik</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#0284c7;box-shadow:0 0 0 1.5px #0f172a;"></div><span>Rayl&#305; Sistem (Tramvay)</span></div>
+  <div class="legend-item"><div class="legend-line" style="border-top:2px dashed #475569;height:0;"></div><span>Y&#252;r&#252;y&#252;&#351; / Aktarma</span></div>
 </div>
 
 <script src="leaflet.js"></script>
 <script>
-  // JavaFX WebView Uyumluluğu:
-  // 1. any3d = false -> CSS 3D donanım transformasyonunu kapatır, gri tile oluşmasını engeller.
-  // 2. zoomAnimation / fadeAnimation = false -> Zoom yaparken tile'ların yok olmasını/gri kalmasını önler.
   L.Browser.any3d = false;
 
   var map = L.map('map', {
     zoomControl: true,
     attributionControl: false,
-    zoomAnimation: false,
-    fadeAnimation: false
+    preferCanvas: true
   }).setView([40.775, 29.945], 13);
 
-  // Humanitarian OpenStreetMap (HOT) Katmanı
-  // maxNativeZoom: 17 sayesinde zoom 18-19 yapıldığında tile'lar kaybolmaz, otomatik scale edilir!
-  L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    maxNativeZoom: 17,
-    subdomains: 'abc',
-    keepBuffer: 10,
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  // 1. Aydınlık Mod Katmanı (Esri World Street Map - Hızlı, Filigransız & Bloklamasız Kurumsal CDN)
+  var lightLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18,
+    keepBuffer: 16,
+    updateWhenIdle: false,
+    updateWhenZooming: false,
+    attribution: '&copy; Esri, DeLorme, NAVTEQ'
+  });
+
+  // 2. Koyu Mod Katmanı (Esri Dark Gray Canvas - Ücretsiz & Filigransız Gece Haritası)
+  var darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 16,
+    keepBuffer: 16,
+    updateWhenIdle: false,
+    updateWhenZooming: false,
+    attribution: '&copy; Esri'
+  });
+
+  // Varsayılan olarak aydınlık katman aktif
+  lightLayer.addTo(map);
+  var currentTheme = 'light';
+
+  function setTheme(theme) {
+    currentTheme = theme;
+    if (theme === 'dark') {
+      document.body.classList.add('theme-dark');
+      map.removeLayer(lightLayer);
+      darkLayer.addTo(map);
+    } else {
+      document.body.classList.remove('theme-dark');
+      map.removeLayer(darkLayer);
+      lightLayer.addTo(map);
+    }
+    triggerResizeSequence();
+  }
 
   var startMarker = null;
   var hedefMarker = null;
   var routeLayers = [];
   var stopMarkers = [];
 
-  var RENK = {
-    yurume:   { main: '#64748b', glow: '#94a3b8', weight: 4, dash: '5, 7' },
-    otobus:   { main: '#2563eb', glow: '#93c5fd', weight: 6, dash: null },
-    tramvay:  { main: '#ea580c', glow: '#fed7aa', weight: 6, dash: null },
-    taksi:    { main: '#eab308', glow: '#fef08a', weight: 6, dash: null },
-    transfer: { main: '#8b5cf6', glow: '#c4b5fd', weight: 4, dash: '3, 6' }
-  };
+  function getRouteStyle(aracTipi, trafikKodu) {
+    if (aracTipi === 'yurume' || aracTipi === 'transfer') {
+      return { main: '#475569', casing: '#ffffff', weight: 4.5, dash: '4, 7' };
+    }
+    if (aracTipi === 'tramvay') {
+      return { main: '#0284c7', casing: '#0f172a', weight: 6.5, dash: null };
+    }
+    // Karayolu trafiği (Otobüs & Taksi):
+    // Trafik yok/az -> Yeşil, Orta -> Sarı, Çok/Yoğun -> Kırmızı
+    if (trafikKodu === 'AZ') {
+      return { main: '#10b981', casing: '#0f172a', weight: 6.5, dash: null }; // Akıcı Yeşil
+    } else if (trafikKodu === 'YOGUN' || trafikKodu === 'KILIT') {
+      return { main: '#ef4444', casing: '#0f172a', weight: 6.5, dash: null }; // Yoğun Kırmızı
+    } else {
+      return { main: '#f59e0b', casing: '#0f172a', weight: 6.5, dash: null }; // Orta Sarı
+    }
+  }
 
   function pinIcon(type, letter) {
     var cls = type === 'start' ? 'pin-start' : 'pin-dest';
@@ -254,10 +312,12 @@
   function triggerResizeSequence() {
     map.invalidateSize(true);
     setTimeout(function() { map.invalidateSize(true); }, 150);
-    setTimeout(function() { map.invalidateSize(true); }, 500);
-    setTimeout(function() { map.invalidateSize(true); }, 1200);
+    setTimeout(function() { map.invalidateSize(true); }, 400);
+    setTimeout(function() { map.invalidateSize(true); }, 900);
   }
   window.addEventListener('resize', invalidateSize);
+  map.on('zoomend', triggerResizeSequence);
+  map.on('moveend', invalidateSize);
   triggerResizeSequence();
 
   function setMarkers(lat1, lon1, lat2, lon2) {
@@ -306,7 +366,7 @@
         }
       }
     } catch (e) {
-      // Ağ hatasında fallback olarak orijinal iki noktayı kullan
+      // Fallback: Orijinal iki noktayı kullan
     }
     return coords;
   }
@@ -329,32 +389,33 @@
     // Her segment için sokak geometrisini al ve çiz
     for (var i = 0; i < segmentler.length; i++) {
       var seg = segmentler[i];
-      var stil = RENK[seg.tip] || RENK.otobus;
+      var stil = getRouteStyle(seg.tip, seg.trafik);
       
       // Gerçek sokak geometrisini OSRM'den çek
       var streetCoords = await fetchStreetGeometry(seg.coords, seg.tip);
 
-      // Glow / Shadow Çizgisi
-      var glowLine = L.polyline(streetCoords, {
-        color: stil.glow,
-        weight: stil.weight + 4,
-        opacity: 0.55,
+      // 1. Arka planla çakışmayı önleyen koruyucu dış casing (Koyu kontur)
+      var casingLine = L.polyline(streetCoords, {
+        color: stil.casing,
+        weight: stil.weight + 3.5,
+        opacity: 0.9,
         lineCap: 'round',
         lineJoin: 'round'
       }).addTo(map);
-      routeLayers.push(glowLine);
+      routeLayers.push(casingLine);
 
-      // Ana Sokak Çizgisi
+      // 2. Ana Trafik Çizgisi (Yeşil, Sarı, Kırmızı)
       var mainLine = L.polyline(streetCoords, {
         color: stil.main,
         weight: stil.weight,
-        opacity: 0.95,
+        opacity: 1.0,
         dashArray: stil.dash,
         lineCap: 'round',
         lineJoin: 'round'
       }).addTo(map);
       routeLayers.push(mainLine);
     }
+    triggerResizeSequence();
   }
 
   function setStops(duraklar) {

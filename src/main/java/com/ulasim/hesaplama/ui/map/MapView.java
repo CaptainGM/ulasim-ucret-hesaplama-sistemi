@@ -139,10 +139,12 @@ public class MapView {
             return;
         }
 
+        String trafikKodu = (rota.getTrafikDurumu() != null) ? rota.getTrafikDurumu().name() : "NORMAL";
         JSONArray segmentler = new JSONArray();
         for (RotaSegmenti segment : rota.getSegmentler()) {
             JSONObject obj = new JSONObject();
             obj.put("tip", segment.getAracTipi());
+            obj.put("trafik", trafikKodu);
 
             JSONArray coords = new JSONArray();
             coords.put(noktaJson(segment.getBaslangicDurak()));
@@ -158,6 +160,10 @@ public class MapView {
 
     public void invalidateSize() {
         calistir("triggerResizeSequence()");
+    }
+
+    public void setTheme(String theme) {
+        calistir("setTheme('" + theme + "')");
     }
 
     private void calistir(String script) {
