@@ -182,6 +182,88 @@
     -fx-border-color: #2563eb;
 }
 
+/* Koyu Tema Başlık, Metin ve Rozet Uyumları */
+.root.dark-theme .brand-title {
+    -fx-text-fill: #ffffff;
+}
+.root.dark-theme .brand-subtitle {
+    -fx-text-fill: #94a3b8;
+}
+.root.dark-theme .field-label {
+    -fx-text-fill: #e2e8f0;
+}
+.root.dark-theme .coord-row Label {
+    -fx-text-fill: #94a3b8;
+}
+.root.dark-theme .section-mini-header {
+    -fx-text-fill: #60a5fa;
+}
+.root.dark-theme .route-title {
+    -fx-text-fill: #ffffff;
+}
+.root.dark-theme .metric-highlight {
+    -fx-text-fill: #60a5fa;
+}
+.root.dark-theme .segment-meta {
+    -fx-text-fill: #94a3b8;
+}
+.root.dark-theme .user-info-badge {
+    -fx-background-color: #162033;
+    -fx-text-fill: #cbd5e1;
+    -fx-border-color: #27354f;
+}
+
+.root.dark-theme .route-badge-price {
+    -fx-background-color: #064e3b;
+    -fx-text-fill: #34d399;
+    -fx-border-color: #059669;
+}
+.root.dark-theme .badge-fast {
+    -fx-background-color: #1e3a5f;
+    -fx-text-fill: #93c5fd;
+    -fx-border-color: #2563eb;
+}
+.root.dark-theme .badge-cheap {
+    -fx-background-color: #064e3b;
+    -fx-text-fill: #6ee7b7;
+    -fx-border-color: #059669;
+}
+.root.dark-theme .badge-taxi {
+    -fx-background-color: #451a03;
+    -fx-text-fill: #fde047;
+    -fx-border-color: #b45309;
+}
+.root.dark-theme .badge-tram {
+    -fx-background-color: #431407;
+    -fx-text-fill: #fdba74;
+    -fx-border-color: #c2410c;
+}
+.root.dark-theme .badge-saving {
+    -fx-background-color: #064e3b;
+    -fx-text-fill: #6ee7b7;
+    -fx-border-color: #047857;
+}
+.root.dark-theme .badge-eco {
+    -fx-background-color: #022c22;
+    -fx-text-fill: #a7f3d0;
+    -fx-border-color: #059669;
+}
+.root.dark-theme .badge-calorie {
+    -fx-background-color: #4c0519;
+    -fx-text-fill: #fda4af;
+    -fx-border-color: #be123c;
+}
+.root.dark-theme .btn-theme-toggle {
+    -fx-background-color: #1e293b;
+    -fx-text-fill: #fde047;
+    -fx-border-color: #475569;
+}
+.root.dark-theme .btn-theme-toggle:hover {
+    -fx-background-color: #334155;
+    -fx-text-fill: #fef08a;
+    -fx-border-color: #eab308;
+}
+
 /* ==========================================================================
    Sidebar & Layout
    ========================================================================== */

@@ -18,7 +18,9 @@
         { "stopId": "bus_umuttepe", "mesafe": 7.2, "sure": 20, "ucret": 42.0 },
         { "stopId": "bus_sehir_hastanesi", "mesafe": 3.2, "sure": 10, "ucret": 42.0 },
         { "stopId": "bus_yahyakaptan", "mesafe": 1.5, "sure": 6, "ucret": 42.0 },
-        { "stopId": "bus_yuvam_akarca", "mesafe": 2.2, "sure": 8, "ucret": 42.0 }
+        { "stopId": "bus_yuvam_akarca", "mesafe": 2.2, "sure": 8, "ucret": 42.0 },
+        { "stopId": "bus_kandira_otogar", "mesafe": 42.0, "sure": 45, "ucret": 65.0 },
+        { "stopId": "bus_kosekoy", "mesafe": 5.5, "sure": 12, "ucret": 42.0 }
       ],
       "transfer": {
         "transferStopId": "tram_otogar",
@@ -69,7 +71,11 @@
         { "stopId": "bus_umuttepe", "mesafe": 6.8, "sure": 18, "ucret": 42.0 },
         { "stopId": "bus_sekapark", "mesafe": 2.2, "sure": 7, "ucret": 42.0 },
         { "stopId": "bus_anitpark", "mesafe": 0.8, "sure": 3, "ucret": 42.0 },
-        { "stopId": "bus_basiskele", "mesafe": 5.2, "sure": 14, "ucret": 42.0 }
+        { "stopId": "bus_basiskele", "mesafe": 5.2, "sure": 14, "ucret": 42.0 },
+        { "stopId": "bus_ozdilek", "mesafe": 6.8, "sure": 15, "ucret": 42.0 },
+        { "stopId": "bus_golcuk_meydan", "mesafe": 14.5, "sure": 25, "ucret": 52.0 },
+        { "stopId": "bus_derince_meydan", "mesafe": 9.8, "sure": 18, "ucret": 42.0 },
+        { "stopId": "bus_gebze_center", "mesafe": 48.0, "sure": 50, "ucret": 75.0 }
       ],
       "transfer": {
         "transferStopId": "tram_halkevi",
@@ -405,6 +411,278 @@
         "transferSure": 2,
         "transferUcret": 12.0
       }
+    },
+    {
+      "id": "bus_ozdilek",
+      "name": "Özdilek AVM (Kartepe)",
+      "type": "bus",
+      "lat": 40.73820,
+      "lon": 30.00350,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_halkevi", "mesafe": 6.8, "sure": 15, "ucret": 42.0 },
+        { "stopId": "bus_kosekoy", "mesafe": 1.2, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_kartepe_meydan", "mesafe": 1.5, "sure": 5, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_kosekoy",
+      "name": "Köseköy Merkez (Kartepe)",
+      "type": "bus",
+      "lat": 40.74450,
+      "lon": 30.01200,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_otogar", "mesafe": 5.5, "sure": 12, "ucret": 42.0 },
+        { "stopId": "bus_ozdilek", "mesafe": 1.2, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_masukiye", "mesafe": 11.2, "sure": 16, "ucret": 48.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_kartepe_meydan",
+      "name": "Kartepe Kent Meydanı",
+      "type": "bus",
+      "lat": 40.73800,
+      "lon": 30.01500,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_ozdilek", "mesafe": 1.5, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_kosekoy", "mesafe": 1.1, "sure": 4, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_masukiye",
+      "name": "Maşukiye Doğa Parkı",
+      "type": "bus",
+      "lat": 40.70500,
+      "lon": 30.12500,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_kosekoy", "mesafe": 11.2, "sure": 16, "ucret": 48.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_golcuk_meydan",
+      "name": "Gölcük Anıtpark Meydanı",
+      "type": "bus",
+      "lat": 40.71850,
+      "lon": 29.82400,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_halkevi", "mesafe": 14.5, "sure": 25, "ucret": 52.0 },
+        { "stopId": "bus_golcuk_donanma", "mesafe": 1.2, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_degirmendere", "mesafe": 3.8, "sure": 8, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_golcuk_donanma",
+      "name": "Gölcük Donanma Kapısı",
+      "type": "bus",
+      "lat": 40.72500,
+      "lon": 29.83200,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_golcuk_meydan", "mesafe": 1.2, "sure": 4, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_degirmendere",
+      "name": "Değirmendere Çınarlık",
+      "type": "bus",
+      "lat": 40.72100,
+      "lon": 29.78200,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_golcuk_meydan", "mesafe": 3.8, "sure": 8, "ucret": 42.0 },
+        { "stopId": "bus_karamursel", "mesafe": 16.5, "sure": 22, "ucret": 52.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_karamursel",
+      "name": "Karamürsel Sahil Kordonu",
+      "type": "bus",
+      "lat": 40.69200,
+      "lon": 29.61500,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_degirmendere", "mesafe": 16.5, "sure": 22, "ucret": 52.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_derince_meydan",
+      "name": "Derince Kent Meydanı",
+      "type": "bus",
+      "lat": 40.75500,
+      "lon": 29.83100,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_halkevi", "mesafe": 9.8, "sure": 18, "ucret": 42.0 },
+        { "stopId": "bus_derince_hastane", "mesafe": 1.1, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_korfez_tutunciftlik", "mesafe": 7.5, "sure": 12, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_derince_hastane",
+      "name": "Derince Eğitim Araştırma Hst.",
+      "type": "bus",
+      "lat": 40.76200,
+      "lon": 29.82400,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_derince_meydan", "mesafe": 1.1, "sure": 4, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_korfez_tutunciftlik",
+      "name": "Körfez Tütünçiftlik Sahil",
+      "type": "bus",
+      "lat": 40.74850,
+      "lon": 29.74200,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_derince_meydan", "mesafe": 7.5, "sure": 12, "ucret": 42.0 },
+        { "stopId": "bus_korfez_yarimca", "mesafe": 3.2, "sure": 6, "ucret": 42.0 },
+        { "stopId": "bus_hereke", "mesafe": 11.0, "sure": 14, "ucret": 48.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_korfez_yarimca",
+      "name": "Körfez Yarımca Merkez",
+      "type": "bus",
+      "lat": 40.76200,
+      "lon": 29.77100,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_korfez_tutunciftlik", "mesafe": 3.2, "sure": 6, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_hereke",
+      "name": "Hereke Sahil & Tarihi Kale",
+      "type": "bus",
+      "lat": 40.78500,
+      "lon": 29.62800,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_korfez_tutunciftlik", "mesafe": 11.0, "sure": 14, "ucret": 48.0 },
+        { "stopId": "bus_dilovasi_meydan", "mesafe": 8.0, "sure": 10, "ucret": 48.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_dilovasi_meydan",
+      "name": "Dilovası Kent Meydanı",
+      "type": "bus",
+      "lat": 40.78800,
+      "lon": 29.54200,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_hereke", "mesafe": 8.0, "sure": 10, "ucret": 48.0 },
+        { "stopId": "bus_gebze_center", "mesafe": 10.5, "sure": 14, "ucret": 52.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_gebze_center",
+      "name": "Gebze Center AVM",
+      "type": "bus",
+      "lat": 40.79850,
+      "lon": 29.43900,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_halkevi", "mesafe": 48.0, "sure": 50, "ucret": 75.0 },
+        { "stopId": "bus_dilovasi_meydan", "mesafe": 10.5, "sure": 14, "ucret": 52.0 },
+        { "stopId": "bus_gebze_meydan", "mesafe": 1.4, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_gtu", "mesafe": 7.5, "sure": 12, "ucret": 42.0 },
+        { "stopId": "bus_darica_hayvanat", "mesafe": 5.8, "sure": 10, "ucret": 42.0 },
+        { "stopId": "bus_cayirova_park", "mesafe": 4.8, "sure": 9, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_gebze_meydan",
+      "name": "Gebze Kent Meydanı",
+      "type": "bus",
+      "lat": 40.80250,
+      "lon": 29.43100,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_gebze_center", "mesafe": 1.4, "sure": 5, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_gtu",
+      "name": "GTÜ (Gebze Teknik Üniversitesi)",
+      "type": "bus",
+      "lat": 40.80800,
+      "lon": 29.35600,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_gebze_center", "mesafe": 7.5, "sure": 12, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_darica_hayvanat",
+      "name": "Darıca Hayvanat Bahçesi",
+      "type": "bus",
+      "lat": 40.77100,
+      "lon": 29.38200,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_gebze_center", "mesafe": 5.8, "sure": 10, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_cayirova_park",
+      "name": "Çayırova Kent Parkı",
+      "type": "bus",
+      "lat": 40.82400,
+      "lon": 29.38500,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_gebze_center", "mesafe": 4.8, "sure": 9, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_kandira_otogar",
+      "name": "Kandıra Otogarı / Merkez",
+      "type": "bus",
+      "lat": 41.07150,
+      "lon": 30.15100,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_otogar", "mesafe": 42.0, "sure": 45, "ucret": 65.0 },
+        { "stopId": "bus_kerpe", "mesafe": 10.5, "sure": 16, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_kerpe",
+      "name": "Kerpe Sahili & Kayalıkları",
+      "type": "bus",
+      "lat": 41.14800,
+      "lon": 30.19800,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_kandira_otogar", "mesafe": 10.5, "sure": 16, "ucret": 42.0 }
+      ],
+      "transfer": null
     }
   ]
 }

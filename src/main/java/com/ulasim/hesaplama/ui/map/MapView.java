@@ -32,6 +32,7 @@ public class MapView {
 
     private Runnable onReadyCallback;
     private Rota bekleyenRota;
+    private String bekleyenTema;
 
     public void setOnReady(Runnable onReady) {
         this.onReadyCallback = onReady;
@@ -50,6 +51,9 @@ public class MapView {
             if (newState == Worker.State.SUCCEEDED) {
                 hazir = true;
                 calistir("setStops(" + duraklarJson() + ")");
+                if (bekleyenTema != null) {
+                    calistir("setTheme('" + bekleyenTema + "')");
+                }
                 calistir("triggerResizeSequence()");
 
                 if (onReadyCallback != null) {
@@ -163,6 +167,8 @@ public class MapView {
     }
 
     public void setTheme(String theme) {
+        this.bekleyenTema = theme;
+        if (!hazir) return;
         calistir("setTheme('" + theme + "')");
     }
 

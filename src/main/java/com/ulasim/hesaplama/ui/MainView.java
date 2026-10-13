@@ -50,22 +50,62 @@ public class MainView extends BorderPane {
     public record PopulerKonum(String ad, double lat, double lon) {}
 
     public static final List<PopulerKonum> POPULER_KONUMLAR = List.of(
+            // İzmit Merkez & Üniversite
             new PopulerKonum("İzmit Otogarı (Terminal)", 40.775970, 29.974113),
             new PopulerKonum("KOÜ Umuttepe Kampüsü", 40.824562, 29.921665),
             new PopulerKonum("Kocaeli Şehir Hastanesi", 40.782254, 29.957500),
             new PopulerKonum("Halkevi (İzmit Merkez)", 40.763500, 29.938700),
             new PopulerKonum("Sekapark Kültür Alanı", 40.760500, 29.914000),
             new PopulerKonum("Yahya Kaptan (Merkez)", 40.771600, 29.960100),
-            new PopulerKonum("Symbol AVM & Medikal", 40.777880, 29.949910),
-            new PopulerKonum("41 Burda AVM", 40.777310, 29.925120),
-            new PopulerKonum("Outlet Center & Fuar", 40.751000, 29.930000),
-            new PopulerKonum("Doğu Kışla Parkı", 40.768000, 29.953000),
+            new PopulerKonum("Doğu Kışla Gençlik Parkı", 40.768000, 29.953000),
             new PopulerKonum("KOÜ Anıtpark Yerleşkesi", 40.767500, 29.940500),
             new PopulerKonum("Plajyolu Sahil", 40.758000, 29.902000),
             new PopulerKonum("Kuruçeşme (Merkez)", 40.765000, 29.888000),
             new PopulerKonum("Kocaeli Stadyumu (Alikahya)", 40.768500, 29.992000),
             new PopulerKonum("Yuvam Akarca Konutları", 40.776000, 29.980000),
-            new PopulerKonum("Başiskele Sahil Parkı", 40.725000, 29.928000)
+
+            // Alışveriş Merkezleri (AVM)
+            new PopulerKonum("Symbol AVM & Medikal", 40.777880, 29.949910),
+            new PopulerKonum("41 Burda AVM", 40.777310, 29.925120),
+            new PopulerKonum("Outlet Center & Fuar", 40.751000, 29.930000),
+            new PopulerKonum("Özdilek AVM (Kartepe)", 40.738200, 30.003500),
+            new PopulerKonum("Gebze Center AVM", 40.798500, 29.439000),
+
+            // Kartepe & Köseköy Bölgesi
+            new PopulerKonum("Köseköy Merkez (Kartepe)", 40.744500, 30.012000),
+            new PopulerKonum("Kartepe Kent Meydanı", 40.738000, 30.015000),
+            new PopulerKonum("Maşukiye Doğa Parkı", 40.705000, 30.125000),
+            new PopulerKonum("Kartepe Kayak & Zirve", 40.655000, 30.098000),
+
+            // Başiskele & Gölcük & Karamürsel Hattı
+            new PopulerKonum("Başiskele Sahil Parkı", 40.725000, 29.928000),
+            new PopulerKonum("Yuvacık Barajı Girişi", 40.665000, 29.952000),
+            new PopulerKonum("Gölcük Anıtpark Meydanı", 40.718500, 29.824000),
+            new PopulerKonum("Gölcük Donanma Kapısı", 40.725000, 29.832000),
+            new PopulerKonum("Değirmendere Çınarlık", 40.721000, 29.782000),
+            new PopulerKonum("Halıdere Sahil", 40.713000, 29.740000),
+            new PopulerKonum("Karamürsel Sahil Kordonu", 40.692000, 29.615000),
+
+            // Derince & Körfez Bölgesi
+            new PopulerKonum("Derince Kent Meydanı", 40.755000, 29.831000),
+            new PopulerKonum("Derince Eğitim Araştırma Hst.", 40.762000, 29.824000),
+            new PopulerKonum("Derince Harikalar Sahili", 40.745000, 29.827000),
+            new PopulerKonum("Körfez Tütünçiftlik Sahil", 40.748500, 29.742000),
+            new PopulerKonum("Körfez Yarımca Merkez", 40.762000, 29.771000),
+            new PopulerKonum("Hereke Sahil & Tarihi Kale", 40.785000, 29.628000),
+
+            // Dilovası & Gebze & Çayırova & Darıca
+            new PopulerKonum("Dilovası Kent Meydanı", 40.788000, 29.542000),
+            new PopulerKonum("Osmangazi Köprüsü Seyir Terası", 40.768000, 29.518000),
+            new PopulerKonum("Gebze Kent Meydanı", 40.802500, 29.431000),
+            new PopulerKonum("GTÜ (Gebze Teknik Üniversitesi)", 40.808000, 29.356000),
+            new PopulerKonum("Darıca Hayvanat Bahçesi", 40.771000, 29.382000),
+            new PopulerKonum("Darıca Millet Bahçesi", 40.748000, 29.402000),
+            new PopulerKonum("Çayırova Kent Parkı", 40.824000, 29.385000),
+
+            // Kandıra & Karadeniz Sahili
+            new PopulerKonum("Kandıra Otogarı / Merkez", 41.071500, 30.151000),
+            new PopulerKonum("Kerpe Sahili & Kayalıkları", 41.148000, 30.198000)
     );
 
     private final UlasimSistemi sistem;
@@ -215,7 +255,14 @@ public class MainView extends BorderPane {
                 olusturPresetCip("⚡ Tramvay Hattı", 40.776100, 29.974000, "Otogar (Akçaray Tram)", 40.763500, 29.938700, "Halkevi (Akçaray Tram)")
         );
 
-        VBox box = new VBox(8, baslik, satir1, satir2);
+        HBox satir3 = new HBox(8);
+        satir3.getChildren().addAll(
+                olusturPresetCip("🛍️ Özdilek AVM", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.738200, 30.003500, "Özdilek AVM (Kartepe)"),
+                olusturPresetCip("⚓ Gölcük Meydan", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.718500, 29.824000, "Gölcük Anıtpark Meydanı"),
+                olusturPresetCip("🏭 Gebze Center", 40.763500, 29.938700, "Halkevi (İzmit Merkez)", 40.798500, 29.439000, "Gebze Center AVM")
+        );
+
+        VBox box = new VBox(8, baslik, satir1, satir2, satir3);
         box.getStyleClass().add("preset-card");
         return box;
     }
@@ -266,7 +313,7 @@ public class MainView extends BorderPane {
 
         // Popüler Kocaeli Konumları Açılır Listesi (Hızlı Seçim)
         ComboBox<String> konumSecici = new ComboBox<>();
-        konumSecici.setPromptText("Seçiniz (16 Popüler Nokta)...");
+        konumSecici.setPromptText("Seçiniz (43 Popüler Kocaeli Noktası)...");
         konumSecici.setMaxWidth(Double.MAX_VALUE);
         konumSecici.getItems().add("-- Popüler Noktalardan Seçin --");
         for (PopulerKonum p : POPULER_KONUMLAR) {
@@ -626,6 +673,30 @@ public class MainView extends BorderPane {
                 hedefLatField.setText(fmt6(40.777310));
                 hedefLonField.setText(fmt6(29.925120));
                 hedefAramaField.setText("41 Burda AVM");
+            }
+            case 6 -> {
+                baslangicLatField.setText(fmt6(40.763500));
+                baslangicLonField.setText(fmt6(29.938700));
+                baslangicAramaField.setText("Halkevi (İzmit Merkez)");
+                hedefLatField.setText(fmt6(40.738200));
+                hedefLonField.setText(fmt6(30.003500));
+                hedefAramaField.setText("Özdilek AVM (Kartepe)");
+            }
+            case 7 -> {
+                baslangicLatField.setText(fmt6(40.763500));
+                baslangicLonField.setText(fmt6(29.938700));
+                baslangicAramaField.setText("Halkevi (İzmit Merkez)");
+                hedefLatField.setText(fmt6(40.718500));
+                hedefLonField.setText(fmt6(29.824000));
+                hedefAramaField.setText("Gölcük Anıtpark Meydanı");
+            }
+            case 8 -> {
+                baslangicLatField.setText(fmt6(40.763500));
+                baslangicLonField.setText(fmt6(29.938700));
+                baslangicAramaField.setText("Halkevi (İzmit Merkez)");
+                hedefLatField.setText(fmt6(40.798500));
+                hedefLonField.setText(fmt6(29.439000));
+                hedefAramaField.setText("Gebze Center AVM");
             }
         }
         haritaMarkerlariniGuncelle();

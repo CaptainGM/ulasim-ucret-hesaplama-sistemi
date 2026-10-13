@@ -15,7 +15,7 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 
 ## 📸 Uygulama Arayüzü
 
-| ☀️ Aydınlık Mod (Esri World Street Map) | 🌙 Koyu Mod (Carbon Midnight & Night Map) |
+| ☀️ Aydınlık Mod (Esri World Street Map) | 🌙 Koyu Mod (HD Gece Uydusu & Ulaşım Ağı Hibriti) |
 |:---:|:---:|
 | ![Aydınlık Mod](screenshot.png) | ![Koyu Mod](docs/dark-mode.png) |
 
@@ -25,7 +25,7 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 |:---:|:---:|
 | ![Kampüs](docs/01-kampus-hatti.png) | ![Sahil](docs/02-sahil-parki.png) |
 
-| 🏬 AVM Hattı (Halkevi ➔ 41 Burda) | ⚡ Tramvay Hattı (Otogar ➔ Halkevi) |
+| 🛍️ AVM Hattı (Halkevi ➔ Özdilek AVM Kartepe) | ⚡ Tramvay Hattı (Otogar ➔ Halkevi) |
 |:---:|:---:|
 | ![AVM](docs/03-avm-hatti.png) | ![Raylı](docs/04-rayli-sistem.png) |
 
@@ -33,11 +33,11 @@ Anlık trafik yoğunluğunu otomatik tarar, güncel UKOME taksi & toplu taşıma
 
 ## ✨ Öne Çıkan Özellikler
 
-* **Kocaeli Popüler 16 Lokasyon Seçici:** Manuel koordinat girme zorunluluğu olmadan İzmit Otogarı, KOÜ Umuttepe Kampüsü, Kocaeli Şehir Hastanesi, Sekapark, Yahya Kaptan, Sembol AVM, 41 Burda ve Outlet Center gibi popüler noktalara açılır menüden tek tıkla rota oluşturma.
+* **Kocaeli Popüler 43 Lokasyon Seçici:** Manuel koordinat girme zahmeti olmadan İzmit, Kartepe (Köseköy, Özdilek AVM, Maşukiye), Gölcük (Donanma, Değirmendere), Körfez (Tütünçiftlik, Yarımca, Hereke), Gebze (Center AVM, GTÜ), Darıca, Çayırova, Dilovası, Karamürsel ve Kandıra (Kerpe) gibi Kocaeli'nin 12 ilçesindeki tüm ana merkezleri açılır menüden tek tıkla seçme imkanı.
 * **Resmi Kocaeli UKOME Gerçekçi Tarifeleri:** Kocaeli Büyükşehir Belediyesi UKOME kararlarıyla tam uyumlu belediye otobüsü (42 TL), Akçaray tramvay (36 TL), taksimetre açılış (55 TL), km başı (55 TL) ve indi-bindi taban ücreti (200 TL).
-* **Aydınlık & Koyu Tema (Light / Dark Mode):** Tek tuşla geçiş yapılabilen `Carbon Midnight` koyu teması ve Esri Dark Gray gece haritası desteği.
-* **Hızlı ve Filigransız Esri GIS Haritası:** Engellemesiz, yüksek performanslı ve akıcı harita katmanı.
-* **Gerçek Sokak Geometrisi (OSRM):** Cetvel gibi düz çizgiler yerine caddeleri, bulvarları ve kavşakları takip eden kesintisiz cadde geometrisi.
+* **Aydınlık & Koyu Tema (Light / Dark Mode):** Tek tuşla geçiş yapılabilen `Carbon Midnight` koyu arayüzü ve büyüleyici **Esri World Imagery (Uzaydan HD Gece Uydu Görüntüsü & Altın Ulaşım Ağı)** harita altyapısı.
+* **Hızlı ve Filigransız Kurumsal Esri GIS:** API anahtarı gerektirmeyen, engellemesiz ve ışık hızında yüklenen harita motoru.
+* **Gerçek Sokak Geometrisi (OSRM):** Cetvel gibi düz çizgiler yerine caddeleri, bulvarları, kavşakları ve D-100/TEM otoyol güzergahlarını milimetrik takip eden gerçekçi rota çizimi.
 * **Otomatik Canlı Trafik Radarı:** Google Haritalar mantığında; anlık saat dilimine ve pik saat yoğunluklarına göre toplu taşıma ve taksi sürelerini dinamik analiz eden sistem.
 * **Çok Modlu Dijkstra Optimizasyonu:** Tramvay, otobüs, taksi ve yürüme etaplarını en hızlı ve en ekonomik kriterlere göre çözer.
 * **Çevre & Bütçe Analitiği:** Direkt taksiye kıyasla tasarruf edilen TL, önlenen CO₂ salımı (gram) ve harcanan kalori (kcal).

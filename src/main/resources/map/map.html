@@ -228,7 +228,7 @@
     preferCanvas: true
   }).setView([40.775, 29.945], 13);
 
-  // 1. Aydınlık Mod Katmanı (Esri World Street Map - Hızlı, Filigransız & Bloklamasız Kurumsal CDN)
+  // 1. Aydınlık Mod Katmanı (Esri World Street Map - Hızlı & Detaylı)
   var lightLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
     maxZoom: 18,
     keepBuffer: 16,
@@ -237,16 +237,23 @@
     attribution: '&copy; Esri, DeLorme, NAVTEQ'
   });
 
-  // 2. Koyu Mod Katmanı (Esri Dark Gray Canvas - Ücretsiz & Filigransız Gece Haritası)
-  var darkLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-    maxZoom: 16,
+  // 2. Koyu Mod Katmanı (Esri Uydu & Gece Ulaşım Ağı Hibriti - Sıfır Filigran, Yüksek Detay)
+  var satBase = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18,
+    keepBuffer: 16,
+    updateWhenIdle: false,
+    updateWhenZooming: false,
+    attribution: '&copy; Esri, Maxar'
+  });
+  var satLabels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom: 18,
     keepBuffer: 16,
     updateWhenIdle: false,
     updateWhenZooming: false,
     attribution: '&copy; Esri'
   });
+  var darkLayer = L.layerGroup([satBase, satLabels]);
 
-  // Varsayılan olarak aydınlık katman aktif
   lightLayer.addTo(map);
   var currentTheme = 'light';
 
@@ -254,12 +261,12 @@
     currentTheme = theme;
     if (theme === 'dark') {
       document.body.classList.add('theme-dark');
-      map.removeLayer(lightLayer);
-      darkLayer.addTo(map);
+      if (map.hasLayer(lightLayer)) map.removeLayer(lightLayer);
+      if (!map.hasLayer(darkLayer)) darkLayer.addTo(map);
     } else {
       document.body.classList.remove('theme-dark');
-      map.removeLayer(darkLayer);
-      lightLayer.addTo(map);
+      if (map.hasLayer(darkLayer)) map.removeLayer(darkLayer);
+      if (!map.hasLayer(lightLayer)) lightLayer.addTo(map);
     }
     triggerResizeSequence();
   }

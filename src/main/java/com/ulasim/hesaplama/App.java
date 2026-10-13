@@ -43,9 +43,8 @@ public class App extends Application {
 
         String themeProp = System.getProperty("theme");
         if ("dark".equalsIgnoreCase(themeProp)) {
-            javafx.animation.PauseTransition themeWait = new javafx.animation.PauseTransition(javafx.util.Duration.millis(800));
-            themeWait.setOnFinished(ev -> mainView.setDarkMode(true));
-            themeWait.play();
+            scene.getRoot().getStyleClass().add("dark-theme");
+            mainView.setDarkMode(true);
         }
 
         // Harita ve rotalar render edildikten sonra GitHub için güncel ekran görüntüsünü otomatik kaydet
