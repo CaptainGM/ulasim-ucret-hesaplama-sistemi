@@ -205,6 +205,145 @@
     height: 5px;
     border-radius: 2px;
   }
+
+  /* Yol Ortası Bilgi Kartı & Yoldan Dışarı Çıkan Ok (Route Callout Speech Bubble) */
+  .route-callout-marker {
+    background: transparent !important;
+    border: none !important;
+    width: 0px !important;
+    height: 0px !important;
+    overflow: visible !important;
+  }
+  .route-callout {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    transform: translate(-50%, -100%);
+    margin-bottom: 14px;
+    z-index: 3000;
+    width: max-content;
+    white-space: nowrap;
+    pointer-events: auto;
+    cursor: default;
+  }
+  .route-callout-bubble {
+    display: inline-block;
+    background: #ffffff;
+    color: #0f172a;
+    border: 1.5px solid #2563eb;
+    border-radius: 9px;
+    padding: 6px 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 10px rgba(37, 99, 235, 0.25);
+    white-space: nowrap;
+    text-align: center;
+    max-width: 320px;
+    transition: transform 0.2s ease;
+  }
+  body.theme-dark .route-callout-bubble {
+    background: #0b1329;
+    color: #f8fafc;
+    border: 1.5px solid #38bdf8;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.8), 0 0 14px rgba(56, 189, 248, 0.4);
+  }
+  .callout-vehicle {
+    font-weight: 800;
+    font-size: 11.5px;
+    color: #1d4ed8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+  body.theme-dark .callout-vehicle {
+    color: #38bdf8;
+  }
+  .vehicle-tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    line-height: 1.35;
+  }
+  .tag-bus { background: #dbeafe; color: #1e40af; }
+  .tag-tram { background: #ffedd5; color: #9a3412; }
+  .tag-taxi { background: #fef9c3; color: #854d0e; }
+  .tag-walk { background: #f1f5f9; color: #475569; }
+
+  body.theme-dark .tag-bus { background: #1e3a8a; color: #bfdbfe; }
+  body.theme-dark .tag-tram { background: #7c2d12; color: #fed7aa; }
+  body.theme-dark .tag-taxi { background: #713f12; color: #fef08a; }
+  body.theme-dark .tag-walk { background: #334155; color: #e2e8f0; }
+  .callout-endpoints {
+    font-weight: 700;
+    font-size: 11px;
+    color: #1e293b;
+    margin-top: 2px;
+    white-space: nowrap;
+  }
+  body.theme-dark .callout-endpoints {
+    color: #f1f5f9;
+  }
+  .callout-meta {
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+  body.theme-dark .callout-meta {
+    color: #94a3b8;
+  }
+
+  /* Yoldan Dışarı Çıkan Ok (Triangle Arrow) */
+  .route-callout-arrow {
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 8px solid #2563eb;
+  }
+  body.theme-dark .route-callout-arrow {
+    border-top-color: #38bdf8;
+  }
+  .route-callout-arrow::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: -6px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 7px solid #ffffff;
+  }
+  body.theme-dark .route-callout-arrow::after {
+    border-top-color: #0b1329;
+  }
+
+  /* Yol Üzerindeki Bağlantı Noktası (Road Anchor Dot) */
+  .route-callout-anchor {
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2563eb;
+    border: 1.5px solid #ffffff;
+    box-shadow: 0 0 6px rgba(0,0,0,0.5);
+  }
+  body.theme-dark .route-callout-anchor {
+    background: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.8);
+  }
 </style>
 </head>
 <body>
@@ -344,6 +483,35 @@
   function clearRoute() {
     routeLayers.forEach(function (l) { map.removeLayer(l); });
     routeLayers = [];
+    guncelleDurakGorunurlugu(null);
+  }
+
+  function guncelleDurakGorunurlugu(aktifDuraklar) {
+    if (!stopMarkers) return;
+    if (!aktifDuraklar || aktifDuraklar.length === 0) {
+      stopMarkers.forEach(function(m) {
+        if (!map.hasLayer(m)) m.addTo(map);
+      });
+      return;
+    }
+
+    // Sadece rotadaki durakları göster, rotayla alakasız olan mavi/turuncu durakları gizle
+    stopMarkers.forEach(function(m) {
+      var rotadaVar = false;
+      if (m._stopName) {
+        var mNorm = m._stopName.toLowerCase().replace(/[\(\)\-\s]/g, '');
+        rotadaVar = aktifDuraklar.some(function(ad) {
+          if (!ad) return false;
+          var adNorm = ad.toLowerCase().replace(/[\(\)\-\s]/g, '');
+          return mNorm.indexOf(adNorm) !== -1 || adNorm.indexOf(mNorm) !== -1;
+        });
+      }
+      if (rotadaVar) {
+        if (!map.hasLayer(m)) m.addTo(map);
+      } else {
+        if (map.hasLayer(m)) map.removeLayer(m);
+      }
+    });
   }
 
   // OSRM Açık Sokak Geometrisi Motoru: İki nokta arasındaki gerçek sokak rotasını çeker
@@ -383,17 +551,23 @@
     clearRoute();
 
     var tumBoundsNoktalari = [];
+    var aktifDuraklar = [];
 
-    // Önce segmentlerin başlangıç/bitiş noktalarından bounds hesapla
+    // Önce segmentlerin başlangıç/bitiş noktalarından bounds hesapla ve aktif durakları topla
     segmentler.forEach(function(s) {
       tumBoundsNoktalari = tumBoundsNoktalari.concat(s.coords);
+      if (s.baslangic) aktifDuraklar.push(s.baslangic);
+      if (s.bitis) aktifDuraklar.push(s.bitis);
     });
+
+    // Rotayla alakasız olan tüm durakları haritadan gizle, sadece rotadakileri göster
+    guncelleDurakGorunurlugu(aktifDuraklar);
 
     if (tumBoundsNoktalari.length > 0) {
       map.fitBounds(L.latLngBounds(tumBoundsNoktalari), { padding: [60, 60], maxZoom: 14 });
     }
 
-    // Her segment için sokak geometrisini al ve çiz
+    // Her segment için sokak geometrisini al, yolu çiz ve yol ortasından dışarı ok çıkan kartı ekle
     for (var i = 0; i < segmentler.length; i++) {
       var seg = segmentler[i];
       var stil = getRouteStyle(seg.tip, seg.trafik);
@@ -421,6 +595,55 @@
         lineJoin: 'round'
       }).addTo(map);
       routeLayers.push(mainLine);
+
+      // 3. Yolun Ortasından Dışarı Ok Çıkan Bilgi Kartı (Hangi noktalar arası & Hangi araç/hat)
+      if (streetCoords && streetCoords.length >= 2) {
+        var midIndex = Math.floor(streetCoords.length / 2);
+        var midCoord = streetCoords[midIndex];
+
+        var rawVehicle = seg.hatBilgisi || (seg.tip === 'tramvay' ? 'T1 Akçaray Tramvayı' : (seg.tip === 'taksi' ? 'Sarı Taksi' : 'Belediye Otobüsü'));
+        var cleanHat = rawVehicle.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]|\uD83D[\uDE80-\uDEFF]/g, '').trim();
+        
+        var badgeType = 'bus';
+        var badgeLabel = 'OTOBÜS';
+        if (seg.tip === 'tramvay' || cleanHat.indexOf('Tramvay') !== -1 || cleanHat.indexOf('T1') !== -1) {
+          badgeType = 'tram';
+          badgeLabel = 'TRAMVAY';
+        } else if (seg.tip === 'taksi' || cleanHat.indexOf('Taksi') !== -1) {
+          badgeType = 'taxi';
+          badgeLabel = 'TAKSİ';
+        } else if (seg.tip === 'yurume' || cleanHat.indexOf('Yaya') !== -1) {
+          badgeType = 'walk';
+          badgeLabel = 'YÜRÜYÜŞ';
+        }
+
+        var endpointsText = (seg.baslangic && seg.bitis) ? (seg.baslangic + ' ➔ ' + seg.bitis) : 'Güzergah Etabı';
+        var metaText = (seg.mesafe ? (seg.mesafe + ' km') : '') + (seg.sure ? (' · ' + seg.sure + ' dk') : '');
+
+        var calloutHtml =
+          '<div class="route-callout">' +
+            '<div class="route-callout-bubble">' +
+              '<div class="callout-vehicle">' +
+                '<span class="vehicle-tag tag-' + badgeType + '">' + badgeLabel + '</span>' +
+                '<span>' + cleanHat + '</span>' +
+              '</div>' +
+              '<div class="callout-endpoints" title="' + endpointsText + '">' + endpointsText + '</div>' +
+              (metaText ? ('<div class="callout-meta">' + metaText + '</div>') : '') +
+            '</div>' +
+            '<div class="route-callout-arrow"></div>' +
+            '<div class="route-callout-anchor"></div>' +
+          '</div>';
+
+        var calloutIcon = L.divIcon({
+          className: 'route-callout-marker',
+          html: calloutHtml,
+          iconSize: [0, 0],
+          iconAnchor: [0, 0]
+        });
+
+        var calloutMarker = L.marker(midCoord, { icon: calloutIcon, zIndexOffset: 3000 }).addTo(map);
+        routeLayers.push(calloutMarker);
+      }
     }
     triggerResizeSequence();
   }
@@ -444,6 +667,9 @@
       });
 
       var marker = L.marker([d.lat, d.lon], { icon: icon }).addTo(map);
+      marker._stopName = d.name;
+      marker._stopLat = d.lat;
+      marker._stopLon = d.lon;
       marker.bindTooltip(d.name, { direction: 'top', offset: [0, -8] });
 
       var popupHtml =

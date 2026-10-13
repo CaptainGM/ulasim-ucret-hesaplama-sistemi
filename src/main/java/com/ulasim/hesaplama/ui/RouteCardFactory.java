@@ -120,14 +120,14 @@ final class RouteCardFactory {
 
         // Segment Açıklaması
         VBox detayKutusu = new VBox(3);
-        String bIsim = temizDurakAdi(segment.getBaslangicDurak().isim);
-        String hIsim = temizDurakAdi(segment.getBitisDurak().isim);
+        String bIsim = com.ulasim.hesaplama.service.KocaeliHatRehberi.temizDurakAdi(segment.getBaslangicDurak().isim);
+        String hIsim = com.ulasim.hesaplama.service.KocaeliHatRehberi.temizDurakAdi(segment.getBitisDurak().isim);
         Label durakAdlari = new Label(bIsim + " ➔ " + hIsim);
         durakAdlari.getStyleClass().add("step-title");
 
         double indirimliUcret = yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
         StringBuilder metaStr = new StringBuilder();
-        metaStr.append(aracAciklamasi(segment.getTip(), segment.getAracTipi()));
+        metaStr.append(segment.getHatBilgisi());
         metaStr.append(String.format(" · %.1f km · %.0f dk", segment.getMesafe(), segment.getSure()));
         
         if (indirimliUcret > 0) {
@@ -147,33 +147,6 @@ final class RouteCardFactory {
         satir.setAlignment(Pos.CENTER_LEFT);
         satir.setPadding(new Insets(4, 0, 4, 0));
         return satir;
-    }
-
-    private static String temizDurakAdi(String isim) {
-        if (isim == null) return "";
-        return isim
-                .replace("(Akçaray Tram)", "İstasyonu")
-                .replace("(Akçaray)", "İstasyonu")
-                .replace("(Terminal)", "")
-                .replace("(Merkez)", "")
-                .replaceAll("\\s+", " ")
-                .trim();
-    }
-
-    private static String aracAciklamasi(String tip, String aracTipi) {
-        if ("tramvay".equalsIgnoreCase(aracTipi) || "tramvay".equalsIgnoreCase(tip)) {
-            return "Tramvay";
-        }
-        if ("otobus".equalsIgnoreCase(aracTipi) || "otobus".equalsIgnoreCase(tip)) {
-            return "Belediye Otobüsü";
-        }
-        if ("taksi".equalsIgnoreCase(aracTipi) || "taksi".equalsIgnoreCase(tip)) {
-            return "Sarı Taksi";
-        }
-        if ("transfer".equalsIgnoreCase(tip)) {
-            return "İstasyon Aktarması";
-        }
-        return "Yürüyüş";
     }
 
     private static String rozetStiliSec(String rozet) {

@@ -8,8 +8,13 @@ public class RotaSegmenti {
     private final double sure;
     private final double ucret;
     private final String aracTipi;
+    private final String hatBilgisi;
 
     public RotaSegmenti(String tip, Durak baslangicDurak, Durak bitisDurak, double mesafe, double sure, double ucret, String aracTipi) {
+        this(tip, baslangicDurak, bitisDurak, mesafe, sure, ucret, aracTipi, null);
+    }
+
+    public RotaSegmenti(String tip, Durak baslangicDurak, Durak bitisDurak, double mesafe, double sure, double ucret, String aracTipi, String hatBilgisi) {
         this.tip = tip;
         this.baslangicDurak = baslangicDurak;
         this.bitisDurak = bitisDurak;
@@ -17,6 +22,15 @@ public class RotaSegmenti {
         this.sure = sure;
         this.ucret = ucret;
         this.aracTipi = aracTipi != null ? aracTipi : tip;
+        this.hatBilgisi = hatBilgisi != null ? hatBilgisi :
+                com.ulasim.hesaplama.service.KocaeliHatRehberi.hatBelirle(
+                        this.tip, this.aracTipi,
+                        baslangicDurak != null ? baslangicDurak.isim : "",
+                        bitisDurak != null ? bitisDurak.isim : "");
+    }
+
+    public String getHatBilgisi() {
+        return hatBilgisi;
     }
 
     public String getAracTipi() {

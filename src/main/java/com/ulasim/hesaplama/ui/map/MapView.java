@@ -149,6 +149,11 @@ public class MapView {
             JSONObject obj = new JSONObject();
             obj.put("tip", segment.getAracTipi());
             obj.put("trafik", trafikKodu);
+            obj.put("hatBilgisi", segment.getHatBilgisi());
+            obj.put("baslangic", com.ulasim.hesaplama.service.KocaeliHatRehberi.temizDurakAdi(segment.getBaslangicDurak().isim));
+            obj.put("bitis", com.ulasim.hesaplama.service.KocaeliHatRehberi.temizDurakAdi(segment.getBitisDurak().isim));
+            obj.put("mesafe", String.format(Locale.ROOT, "%.1f", segment.getMesafe()));
+            obj.put("sure", (int) Math.round(segment.getSure()));
 
             JSONArray coords = new JSONArray();
             coords.put(noktaJson(segment.getBaslangicDurak()));
