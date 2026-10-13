@@ -400,7 +400,7 @@
     },
     {
       "id": "tram_sehir_hastanesi",
-      "name": "Şehir Hastanesi (Tram)",
+      "name": "Şehir Hastanesi Tramvay İstasyonu",
       "type": "tram",
       "lat": 40.78225,
       "lon": 29.95750,

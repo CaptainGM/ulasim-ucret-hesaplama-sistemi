@@ -12,8 +12,9 @@ public final class KocaeliHatRehberi {
     public static String temizDurakAdi(String isim) {
         if (isim == null) return "";
         return isim
-                .replace("(Akçaray Tram)", "İstasyonu")
-                .replace("(Akçaray)", "İstasyonu")
+                .replace("(Akçaray Tram)", "Tramvay")
+                .replace("(Akçaray)", "Tramvay")
+                .replace("(Tram)", "Tramvay")
                 .replace("(Terminal)", "")
                 .replace("(Merkez)", "")
                 .replaceAll("\\s+", " ")
@@ -26,7 +27,7 @@ public final class KocaeliHatRehberi {
         String arac = (aracTipi != null ? aracTipi.toLowerCase() : (tip != null ? tip.toLowerCase() : ""));
 
         if ("tramvay".equals(arac)) {
-            return "🚋 T1 Akçaray Tramvayı";
+            return "🚋 Tramvay";
         }
         if ("taksi".equals(arac)) {
             return "🚕 Sarı Taksi";

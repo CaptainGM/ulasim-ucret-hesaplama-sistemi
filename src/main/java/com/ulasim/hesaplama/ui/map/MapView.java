@@ -156,8 +156,14 @@ public class MapView {
             obj.put("sure", (int) Math.round(segment.getSure()));
 
             JSONArray coords = new JSONArray();
-            coords.put(noktaJson(segment.getBaslangicDurak()));
-            coords.put(noktaJson(segment.getBitisDurak()));
+            if (segment.getDuraklar() != null && !segment.getDuraklar().isEmpty()) {
+                for (Durak d : segment.getDuraklar()) {
+                    coords.put(noktaJson(d));
+                }
+            } else {
+                coords.put(noktaJson(segment.getBaslangicDurak()));
+                coords.put(noktaJson(segment.getBitisDurak()));
+            }
             obj.put("coords", coords);
 
             segmentler.put(obj);

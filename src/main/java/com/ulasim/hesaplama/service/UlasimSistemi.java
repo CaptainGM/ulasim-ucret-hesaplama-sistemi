@@ -146,7 +146,8 @@ public class UlasimSistemi {
 
     private double hesaplaTaksiRotasi(Konum baslangic, Konum hedef, TrafikDurumu trafik, List<Rota> rotalar) {
         Rota taksiRota = new Rota("Direkt Taksi");
-        double toplamMesafe = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, hedef);
+        double kusUcusu = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, hedef);
+        double toplamMesafe = Math.round(kusUcusu * 1.25 * 10.0) / 10.0;
         Taksi taksi = new Taksi("TAX001");
         double taksiUcret = taksi.ucretHesapla(toplamMesafe, trafik);
         double taksiSure = taksi.sureHesapla(toplamMesafe, trafik);
@@ -217,7 +218,9 @@ public class UlasimSistemi {
                     segment.getMesafe(),
                     Math.round(duzeltilmisSure * 10.0) / 10.0,
                     segment.getUcret(),
-                    segment.getAracTipi()
+                    segment.getAracTipi(),
+                    segment.getHatBilgisi(),
+                    segment.getDuraklar()
             );
             rota.ekleSegment(duzeltilmisSegment);
         }
@@ -279,6 +282,10 @@ public class UlasimSistemi {
             double toplamMesafe = baslangicSeg.getMesafe();
             double toplamSure = baslangicSeg.getSure();
 
+            List<Durak> segmentDuraklari = new ArrayList<>();
+            segmentDuraklari.add(ilkDurak);
+            segmentDuraklari.add(sonDurak);
+
             // İlk binişte tam tarife (Tramvay 36 TL, Otobüs 42 TL), aktarmada indirimli (12 TL)
             double biletUcreti;
             if (!ilkBiletAlindi) {
@@ -297,6 +304,7 @@ public class UlasimSistemi {
                     toplamMesafe += sonraki.getMesafe();
                     toplamSure += sonraki.getSure();
                     sonDurak = sonraki.getBitisDurak();
+                    segmentDuraklari.add(sonDurak);
                     j++;
                 } else {
                     break;
@@ -310,7 +318,9 @@ public class UlasimSistemi {
                     Math.round(toplamMesafe * 100.0) / 100.0,
                     Math.round(toplamSure * 10.0) / 10.0,
                     biletUcreti, // Durak sayısından bağımsız TEK BİNİŞ ÜCRETİ
-                    arac
+                    arac,
+                    null,
+                    segmentDuraklari
             ));
 
             i = j;
