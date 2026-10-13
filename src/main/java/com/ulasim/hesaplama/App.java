@@ -21,15 +21,26 @@ public class App extends Application {
             stage.getIcons().add(new Image(getClass().getResourceAsStream("/icons/app-icon-" + boyut + ".png")));
         }
 
-        stage.setTitle("Ulaşım Sistemi");
+        stage.setTitle("TransitRoute - Kentsel Rota & Ücret Optimizasyon Platformu");
         stage.setScene(scene);
-        stage.setMinWidth(960);
-        stage.setMinHeight(640);
-        stage.setWidth(1200);
-        stage.setHeight(800);
+        stage.setMinWidth(980);
+        stage.setMinHeight(680);
+        stage.setWidth(1280);
+        stage.setHeight(840);
         stage.centerOnScreen();
         stage.show();
+
+        // Harita ve rotalar render edildikten sonra GitHub için güncel ekran görüntüsünü otomatik kaydet
+        javafx.animation.PauseTransition autoShot = new javafx.animation.PauseTransition(javafx.util.Duration.seconds(4.5));
+        autoShot.setOnFinished(e -> {
+            try {
+                com.ulasim.hesaplama.ui.ScreenshotExporter.yakalaVeKaydet(scene.getRoot(), "screenshot.png");
+            } catch (Exception ignored) {}
+        });
+        autoShot.play();
+
     }
+
 
     public static void main(String[] args) {
         launch(args);

@@ -2,38 +2,218 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<title>Ulaşım Haritası</title>
+<title>TransitRoute GIS Haritası</title>
 <link rel="stylesheet" href="leaflet.css" />
 <style>
-  html, body, #map { height: 100%; margin: 0; padding: 0; }
-  .pin-icon {
-    width: 26px; height: 26px; border-radius: 50% 50% 50% 0;
+  * { box-sizing: border-box; }
+  html, body, #map {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  /* JavaFX WebView için donanım/zoom uyumluluk stilleri */
+  .leaflet-tile {
+    visibility: inherit !important;
+    opacity: 1 !important;
+  }
+  .leaflet-tile-container {
+    opacity: 1 !important;
+  }
+  .leaflet-container {
+    background-color: #f1f5f9 !important;
+  }
+
+  /* Harita Pinleri */
+  .custom-pin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50% 50% 50% 0;
     transform: rotate(-45deg);
     border: 2px solid #ffffff;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   }
-  .pin-icon span {
-    display: block; transform: rotate(45deg);
-    text-align: center; line-height: 22px; font-size: 12px; font-weight: bold; color: #fff;
+  .custom-pin:hover {
+    transform: rotate(-45deg) scale(1.15);
   }
-  .pin-start { background: #16a34a; }
-  .pin-hedef { background: #dc2626; }
-  .stop-dot {
-    width: 10px; height: 10px; border-radius: 50%;
-    border: 2px solid #ffffff; box-shadow: 0 1px 3px rgba(0,0,0,0.35);
+  .custom-pin span {
+    transform: rotate(45deg);
+    font-weight: 800;
+    font-size: 13px;
+    color: #ffffff;
+    line-height: 1;
   }
-  .stop-bus { background: #2563eb; }
-  .stop-tram { background: #ea580c; }
+  .pin-start { background: linear-gradient(135deg, #10b981, #059669); }
+  .pin-dest  { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+  /* Durak Noktaları */
+  .stop-marker {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2.5px solid #ffffff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .stop-marker:hover {
+    transform: scale(1.4);
+    box-shadow: 0 0 12px rgba(37,99,235,0.6);
+  }
+  .stop-bus {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  }
+  .stop-tram {
+    background: linear-gradient(135deg, #f97316, #c2410c);
+  }
+
+  /* Popup Kartı */
+  .leaflet-popup-content-wrapper {
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    padding: 2px;
+    font-family: inherit;
+  }
+  .leaflet-popup-content {
+    margin: 12px 14px;
+    line-height: 1.4;
+  }
+  .popup-card {
+    min-width: 190px;
+  }
+  .popup-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .popup-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+  .popup-badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-bus { background: #dbeafe; color: #1e40af; }
+  .badge-tram { background: #ffedd5; color: #9a3412; }
+
+  .popup-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .btn-popup {
+    flex: 1;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    transition: background-color 0.15s ease, transform 0.1s ease;
+  }
+  .btn-popup:active {
+    transform: scale(0.96);
+  }
+  .btn-start {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+  .btn-start:hover {
+    background-color: #10b981;
+    color: #ffffff;
+  }
+  .btn-dest {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+  .btn-dest:hover {
+    background-color: #ef4444;
+    color: #ffffff;
+  }
+
+  /* Harita Lejantı */
+  .map-legend {
+    position: absolute;
+    bottom: 24px;
+    right: 12px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    font-size: 11px;
+    color: #334155;
+    pointer-events: none;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 3px 0;
+  }
+  .legend-line {
+    width: 18px;
+    height: 4px;
+    border-radius: 2px;
+  }
 </style>
 </head>
 <body>
 <div id="map"></div>
+
+<div class="map-legend">
+  <div class="legend-item"><div class="legend-line" style="background:#2563eb;"></div><span>Otobüs Hattı</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#f97316;"></div><span>Tramvay Hattı</span></div>
+  <div class="legend-item"><div class="legend-line" style="background:#eab308;"></div><span>Taksi Güzergahı</span></div>
+  <div class="legend-item"><div class="legend-line" style="border-top:2px dashed #64748b;height:0;"></div><span>Yürüyüş / Aktarma</span></div>
+</div>
+
 <script src="leaflet.js"></script>
 <script>
-  var map = L.map('map').setView([40.77, 29.96], 13);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  // JavaFX WebView Uyumluluğu:
+  // 1. any3d = false -> CSS 3D donanım transformasyonunu kapatır, gri tile oluşmasını engeller.
+  // 2. zoomAnimation / fadeAnimation = false -> Zoom yaparken tile'ların yok olmasını/gri kalmasını önler.
+  L.Browser.any3d = false;
+
+  var map = L.map('map', {
+    zoomControl: true,
+    attributionControl: false,
+    zoomAnimation: false,
+    fadeAnimation: false
+  }).setView([40.775, 29.945], 13);
+
+  // Humanitarian OpenStreetMap (HOT) Katmanı
+  // maxNativeZoom: 17 sayesinde zoom 18-19 yapıldığında tile'lar kaybolmaz, otomatik scale edilir!
+  L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap katkıda bulunanlar'
+    maxNativeZoom: 17,
+    subdomains: 'abc',
+    keepBuffer: 10,
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
   var startMarker = null;
@@ -42,60 +222,138 @@
   var stopMarkers = [];
 
   var RENK = {
-    yurume: { color: '#6b7280', dashArray: '4 6' },
-    otobus: { color: '#2563eb', dashArray: null },
-    tramvay: { color: '#ea580c', dashArray: null },
-    taksi: { color: '#ca8a04', dashArray: null },
-    transfer: { color: '#7c3aed', dashArray: '2 6' }
+    yurume:   { main: '#64748b', glow: '#94a3b8', weight: 4, dash: '5, 7' },
+    otobus:   { main: '#2563eb', glow: '#93c5fd', weight: 6, dash: null },
+    tramvay:  { main: '#ea580c', glow: '#fed7aa', weight: 6, dash: null },
+    taksi:    { main: '#eab308', glow: '#fef08a', weight: 6, dash: null },
+    transfer: { main: '#8b5cf6', glow: '#c4b5fd', weight: 4, dash: '3, 6' }
   };
 
-  function pinIcon(cssClass, harf) {
+  function pinIcon(type, letter) {
+    var cls = type === 'start' ? 'pin-start' : 'pin-dest';
     return L.divIcon({
       className: '',
-      html: '<div class="pin-icon ' + cssClass + '"><span>' + harf + '</span></div>',
-      iconSize: [26, 26],
-      iconAnchor: [13, 26]
+      html: '<div class="custom-pin ' + cls + '"><span>' + letter + '</span></div>',
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
     });
   }
 
   function invalidateSize() {
-    map.invalidateSize();
+    map.invalidateSize(true);
   }
 
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(function() {
+      map.invalidateSize(true);
+    });
+    ro.observe(document.getElementById('map'));
+  }
+
+  function triggerResizeSequence() {
+    map.invalidateSize(true);
+    setTimeout(function() { map.invalidateSize(true); }, 150);
+    setTimeout(function() { map.invalidateSize(true); }, 500);
+    setTimeout(function() { map.invalidateSize(true); }, 1200);
+  }
+  window.addEventListener('resize', invalidateSize);
+  triggerResizeSequence();
+
   function setMarkers(lat1, lon1, lat2, lon2) {
+    map.invalidateSize(true);
     if (startMarker) { map.removeLayer(startMarker); }
     if (hedefMarker) { map.removeLayer(hedefMarker); }
 
-    startMarker = L.marker([lat1, lon1], { icon: pinIcon('pin-start', 'B') }).addTo(map);
-    hedefMarker = L.marker([lat2, lon2], { icon: pinIcon('pin-hedef', 'H') }).addTo(map);
+    startMarker = L.marker([lat1, lon1], { icon: pinIcon('start', 'B'), zIndexOffset: 1000 }).addTo(map);
+    startMarker.bindTooltip("Başlangıç Noktası", { direction: 'top' });
 
-    map.fitBounds(L.latLngBounds([[lat1, lon1], [lat2, lon2]]), { padding: [60, 60] });
+    hedefMarker = L.marker([lat2, lon2], { icon: pinIcon('dest', 'H'), zIndexOffset: 1000 }).addTo(map);
+    hedefMarker.bindTooltip("Varış Noktası", { direction: 'top' });
+
+    map.fitBounds(L.latLngBounds([[lat1, lon1], [lat2, lon2]]), { padding: [50, 50], maxZoom: 14 });
   }
 
   function clearRoute() {
-    routeLayers.forEach(function (layer) { map.removeLayer(layer); });
+    routeLayers.forEach(function (l) { map.removeLayer(l); });
     routeLayers = [];
   }
 
-  function drawRoute(segmentler) {
-    clearRoute();
-    var tumNoktalar = [];
+  // OSRM Açık Sokak Geometrisi Motoru: İki nokta arasındaki gerçek sokak rotasını çeker
+  async function fetchStreetGeometry(coords, vehicleType) {
+    if (!coords || coords.length < 2) return coords;
+    var p1 = coords[0];
+    var p2 = coords[coords.length - 1];
+    var profile = (vehicleType === 'yurume' || vehicleType === 'transfer') ? 'walking' : 'driving';
 
-    segmentler.forEach(function (segment) {
-      var stil = RENK[segment.tip] || RENK.transfer;
-      var noktalar = segment.coords;
-      var line = L.polyline(noktalar, {
-        color: stil.color,
-        weight: 5,
-        opacity: 0.85,
-        dashArray: stil.dashArray
-      }).addTo(map);
-      routeLayers.push(line);
-      tumNoktalar = tumNoktalar.concat(noktalar);
+    var url = 'https://router.project-osrm.org/route/v1/' + profile + '/' +
+              p1[1].toFixed(6) + ',' + p1[0].toFixed(6) + ';' +
+              p2[1].toFixed(6) + ',' + p2[0].toFixed(6) +
+              '?overview=full&geometries=geojson';
+
+    try {
+      var controller = new AbortController();
+      var timeout = setTimeout(function() { controller.abort(); }, 2500);
+      var response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeout);
+
+      if (response.ok) {
+        var json = await response.json();
+        if (json.routes && json.routes[0] && json.routes[0].geometry) {
+          return json.routes[0].geometry.coordinates.map(function(c) {
+            return [c[1], c[0]]; // [lat, lon]
+          });
+        }
+      }
+    } catch (e) {
+      // Ağ hatasında fallback olarak orijinal iki noktayı kullan
+    }
+    return coords;
+  }
+
+  async function drawRoute(segmentler) {
+    map.invalidateSize(true);
+    clearRoute();
+
+    var tumBoundsNoktalari = [];
+
+    // Önce segmentlerin başlangıç/bitiş noktalarından bounds hesapla
+    segmentler.forEach(function(s) {
+      tumBoundsNoktalari = tumBoundsNoktalari.concat(s.coords);
     });
 
-    if (tumNoktalar.length > 0) {
-      map.fitBounds(L.latLngBounds(tumNoktalar), { padding: [60, 60] });
+    if (tumBoundsNoktalari.length > 0) {
+      map.fitBounds(L.latLngBounds(tumBoundsNoktalari), { padding: [60, 60], maxZoom: 14 });
+    }
+
+    // Her segment için sokak geometrisini al ve çiz
+    for (var i = 0; i < segmentler.length; i++) {
+      var seg = segmentler[i];
+      var stil = RENK[seg.tip] || RENK.otobus;
+      
+      // Gerçek sokak geometrisini OSRM'den çek
+      var streetCoords = await fetchStreetGeometry(seg.coords, seg.tip);
+
+      // Glow / Shadow Çizgisi
+      var glowLine = L.polyline(streetCoords, {
+        color: stil.glow,
+        weight: stil.weight + 4,
+        opacity: 0.55,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+      routeLayers.push(glowLine);
+
+      // Ana Sokak Çizgisi
+      var mainLine = L.polyline(streetCoords, {
+        color: stil.main,
+        weight: stil.weight,
+        opacity: 0.95,
+        dashArray: stil.dash,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+      routeLayers.push(mainLine);
     }
   }
 
@@ -104,21 +362,47 @@
     stopMarkers = [];
 
     duraklar.forEach(function (d) {
-      var cssClass = d.tip === 'bus' ? 'stop-bus' : 'stop-tram';
+      var isBus = (d.tip === 'bus');
+      var cssCls = isBus ? 'stop-bus' : 'stop-tram';
+      var badgeCls = isBus ? 'badge-bus' : 'badge-tram';
+      var tipAdi = isBus ? 'Otobüs Durağı' : 'Tramvay İstasyonu';
+
       var icon = L.divIcon({
         className: '',
-        html: '<div class="stop-dot ' + cssClass + '"></div>',
-        iconSize: [10, 10],
-        iconAnchor: [5, 5]
+        html: '<div class="stop-marker ' + cssCls + '"></div>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+        popupAnchor: [0, -10]
       });
-      var marker = L.marker([d.lat, d.lon], { icon: icon, title: d.name }).addTo(map);
-      marker.bindTooltip(d.name);
+
+      var marker = L.marker([d.lat, d.lon], { icon: icon }).addTo(map);
+      marker.bindTooltip(d.name, { direction: 'top', offset: [0, -8] });
+
+      var popupHtml =
+        '<div class="popup-card">' +
+          '<div class="popup-header">' +
+            '<h4 class="popup-title">' + d.name + '</h4>' +
+          '</div>' +
+          '<span class="popup-badge ' + badgeCls + '">' + tipAdi + '</span>' +
+          '<div class="popup-actions">' +
+            '<button class="btn-popup btn-start" onclick="secimGonder(\'START\',' + d.lat + ',' + d.lon + ',\'' + encodeURIComponent(d.name) + '\')">📍 Başlangıç</button>' +
+            '<button class="btn-popup btn-dest" onclick="secimGonder(\'DEST\',' + d.lat + ',' + d.lon + ',\'' + encodeURIComponent(d.name) + '\')">🎯 Hedef</button>' +
+          '</div>' +
+        '</div>';
+
+      marker.bindPopup(popupHtml);
       stopMarkers.push(marker);
     });
   }
 
+  function secimGonder(tip, lat, lon, nameEncoded) {
+    var name = decodeURIComponent(nameEncoded);
+    map.closePopup();
+    window.status = 'STOP_SELECT:' + tip + ':' + lat + ':' + lon + ':' + name + ':' + Date.now();
+  }
+
   map.on('click', function (e) {
-    window.status = e.latlng.lat + ',' + e.latlng.lng + ',' + Date.now();
+    window.status = 'MAP_CLICK:' + e.latlng.lat + ':' + e.latlng.lng + ':' + Date.now();
   });
 </script>
 </body>

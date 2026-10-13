@@ -3,6 +3,7 @@ package com.ulasim.hesaplama.ui;
 import com.ulasim.hesaplama.domain.yolcu.Yolcu;
 import com.ulasim.hesaplama.model.Rota;
 import com.ulasim.hesaplama.model.RotaSegmenti;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
@@ -21,8 +22,18 @@ final class RouteCardFactory {
             toplamIndirimliUcret += yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
         }
 
+        // 1. Başlık ve Rozetler
         Label baslik = new Label(rota.getRotaAdi());
         baslik.getStyleClass().add("route-title");
+
+        HBox rozetKutusu = new HBox(6);
+        rozetKutusu.setAlignment(Pos.CENTER_LEFT);
+
+        if (rota.getRozet() != null && !rota.getRozet().isBlank()) {
+            Label oncelikRozeti = new Label(rota.getRozet());
+            oncelikRozeti.getStyleClass().addAll("route-badge", rozetStiliSec(rota.getRozet()));
+            rozetKutusu.getChildren().add(oncelikRozeti);
+        }
 
         Region baslikSpacer = new Region();
         HBox.setHgrow(baslikSpacer, Priority.ALWAYS);
@@ -30,51 +41,117 @@ final class RouteCardFactory {
         Label ucretRozeti = new Label(String.format("%.2f TL", toplamIndirimliUcret));
         ucretRozeti.getStyleClass().addAll("route-badge", "route-badge-price");
 
-        HBox baslikSatiri = new HBox(8, baslik, baslikSpacer, ucretRozeti);
+        HBox baslikSatiri = new HBox(8, baslik, rozetKutusu, baslikSpacer, ucretRozeti);
         baslikSatiri.setAlignment(Pos.CENTER_LEFT);
 
-        Label metaRozeti = new Label(String.format("%.0f dk  ·  %.2f km  ·  %d aktarma",
-                rota.getToplamSure(), rota.getToplamMesafe(), rota.getAktarmaSayisi()));
-        metaRozeti.getStyleClass().add("segment-meta");
+        // 2. Temel Metrikler (Süre, Mesafe, Aktarma)
+        Label sureLabel = new Label(String.format("⏱ %.0f dk", rota.getToplamSure()));
+        sureLabel.getStyleClass().add("metric-highlight");
 
-        VBox segmentKutusu = new VBox(2);
-        for (RotaSegmenti segment : rota.getSegmentler()) {
-            segmentKutusu.getChildren().add(segmentSatiri(segment, yolcu));
+        Label mesafeLabel = new Label(String.format("📍 %.2f km", rota.getToplamMesafe()));
+        mesafeLabel.getStyleClass().add("segment-meta");
+
+        Label aktarmaLabel = new Label(String.format("🔄 %d aktarma", rota.getAktarmaSayisi()));
+        aktarmaLabel.getStyleClass().add("segment-meta");
+
+        HBox metrikSatiri = new HBox(12, sureLabel, mesafeLabel, aktarmaLabel);
+        metrikSatiri.setAlignment(Pos.CENTER_LEFT);
+
+        // 3. Eko & Tasarruf Bilgisi (CO2 & Para Tasarrufu)
+        HBox ekoSatiri = new HBox(8);
+        ekoSatiri.setAlignment(Pos.CENTER_LEFT);
+
+        if (rota.getTasarrufMiktari() > 1.0) {
+            Label tasarrufRozeti = new Label(String.format("💰 %.1f TL Tasarruf", rota.getTasarrufMiktari()));
+            tasarrufRozeti.getStyleClass().addAll("badge-pill", "badge-saving");
+            ekoSatiri.getChildren().add(tasarrufRozeti);
         }
 
-        Label haritaLink = new Label("🗺 Haritada Göster");
-        haritaLink.getStyleClass().add("segment-meta");
+        if (rota.getCo2SalinimiGram() > 0) {
+            Label co2Rozeti = new Label(String.format("🌿 %.0fg CO₂", rota.getCo2SalinimiGram()));
+            co2Rozeti.getStyleClass().addAll("badge-pill", "badge-eco");
+            ekoSatiri.getChildren().add(co2Rozeti);
+        }
 
-        VBox kart = new VBox(8, baslikSatiri, metaRozeti, new Separator(), segmentKutusu, haritaLink);
+        if (rota.getKaloriKcal() > 5.0) {
+            Label kaloriRozeti = new Label(String.format("🔥 %.0f kcal", rota.getKaloriKcal()));
+            kaloriRozeti.getStyleClass().addAll("badge-pill", "badge-calorie");
+            ekoSatiri.getChildren().add(kaloriRozeti);
+        }
+
+        // 4. Adım Adım Zaman Çizelgesi (Timeline / Stepper)
+        VBox segmentKutusu = new VBox(6);
+        segmentKutusu.getStyleClass().add("timeline-container");
+        for (int i = 0; i < rota.getSegmentler().size(); i++) {
+            RotaSegmenti segment = rota.getSegmentler().get(i);
+            boolean sonMu = (i == rota.getSegmentler().size() - 1);
+            segmentKutusu.getChildren().add(segmentTimelineSatiri(segment, yolcu, sonMu));
+        }
+
+        // 5. Alt Bilgi & Harita Odaklama Aksiyonu
+        Label odaklaEtiketi = new Label("🗺️ Haritada Canlı Göster");
+        odaklaEtiketi.getStyleClass().add("route-action-link");
+
+        Region altSpacer = new Region();
+        HBox.setHgrow(altSpacer, Priority.ALWAYS);
+
+        Label detayBilgi = new Label(rota.getSegmentler().size() + " Adım");
+        detayBilgi.getStyleClass().add("segment-meta");
+
+        HBox altSatir = new HBox(8, odaklaEtiketi, altSpacer, detayBilgi);
+        altSatir.setAlignment(Pos.CENTER_LEFT);
+
+        VBox kart = new VBox(10, baslikSatiri, metrikSatiri);
+        if (!ekoSatiri.getChildren().isEmpty()) {
+            kart.getChildren().add(ekoSatiri);
+        }
+        kart.getChildren().addAll(new Separator(), segmentKutusu, altSatir);
         kart.getStyleClass().add("route-card");
         kart.setOnMouseClicked(e -> haritadaGoster.run());
+
         return kart;
     }
 
-    private static HBox segmentSatiri(RotaSegmenti segment, Yolcu yolcu) {
-        String aciklama = ikon(segment.getTip()) + "  " + baslikMetni(segment.getTip()) + ": "
-                + segment.getBaslangicDurak().isim + " → " + segment.getBitisDurak().isim;
+    private static HBox segmentTimelineSatiri(RotaSegmenti segment, Yolcu yolcu, boolean sonMu) {
+        // İkon çemberi
+        Label ikonLabel = new Label(ikon(segment.getTip()));
+        ikonLabel.getStyleClass().addAll("step-icon", "step-icon-" + segment.getTip());
 
-        Label aciklamaEtiketi = new Label(aciklama);
-        aciklamaEtiketi.getStyleClass().add("segment-row");
+        // Segment Açıklaması
+        VBox detayKutusu = new VBox(2);
+        Label durakAdlari = new Label(segment.getBaslangicDurak().isim + " → " + segment.getBitisDurak().isim);
+        durakAdlari.getStyleClass().add("step-title");
+
+        double indirimliUcret = yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
+        StringBuilder metaStr = new StringBuilder(String.format("%.1f km · %.0f dk", segment.getMesafe(), segment.getSure()));
+        if (indirimliUcret > 0) {
+            metaStr.append(String.format(" · %.2f TL", indirimliUcret));
+        } else if (!segment.getTip().equals("yurume")) {
+            metaStr.append(" · Ücretsiz Aktarma");
+        }
+
+        Label metaLabel = new Label(metaStr.toString());
+        metaLabel.getStyleClass().add("step-meta");
+        detayKutusu.getChildren().addAll(durakAdlari, metaLabel);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        double indirimliUcret = yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
-        StringBuilder metaMetni = new StringBuilder(String.format("%.2f km · %.0f dk", segment.getMesafe(), segment.getSure()));
-        if (indirimliUcret > 0) {
-            metaMetni.append(String.format(" · %.2f TL", indirimliUcret));
-        } else if (!segment.getTip().equals("yurume")) {
-            metaMetni.append(" · Ücretsiz");
-        }
+        Label tipRozeti = new Label(baslikMetni(segment.getTip()));
+        tipRozeti.getStyleClass().addAll("step-type-badge", "badge-" + segment.getTip());
 
-        Label metaEtiketi = new Label(metaMetni.toString());
-        metaEtiketi.getStyleClass().add("segment-meta");
-
-        HBox satir = new HBox(8, aciklamaEtiketi, spacer, metaEtiketi);
+        HBox satir = new HBox(8, ikonLabel, detayKutusu, spacer, tipRozeti);
         satir.setAlignment(Pos.CENTER_LEFT);
+        satir.setPadding(new Insets(2, 0, 2, 0));
         return satir;
+    }
+
+    private static String rozetStiliSec(String rozet) {
+        if (rozet.contains("Hızlı")) return "badge-fast";
+        if (rozet.contains("Ekonomik")) return "badge-cheap";
+        if (rozet.contains("Taksi")) return "badge-taxi";
+        if (rozet.contains("Raylı")) return "badge-tram";
+        return "badge-general";
     }
 
     private static String ikon(String tip) {
@@ -84,7 +161,7 @@ final class RouteCardFactory {
             case "otobus" -> "🚌";
             case "tramvay" -> "🚋";
             case "transfer" -> "🔄";
-            default -> "•";
+            default -> "📍";
         };
     }
 
@@ -94,7 +171,7 @@ final class RouteCardFactory {
             case "taksi" -> "Taksi";
             case "otobus" -> "Otobüs";
             case "tramvay" -> "Tramvay";
-            case "transfer" -> "Transfer";
+            case "transfer" -> "Aktarma";
             default -> tip;
         };
     }

@@ -14,16 +14,26 @@ if not defined JAVA_HOME (
     exit /b 1
 )
 
-echo [1/2] Uygulama derleniyor (ilk calistirmada bagimliliklar indirilecegi icin biraz surebilir)...
-call ".\mvnw.cmd" -q package
-if errorlevel 1 (
-    echo.
-    echo Derleme sirasinda hata olustu. Yukaridaki mesajlari kontrol edin.
-    pause
-    exit /b 1
+set "NEED_BUILD=0"
+if not exist "target\classes\com\ulasim\hesaplama\Launcher.class" set "NEED_BUILD=1"
+if not exist "target\dependency" set "NEED_BUILD=1"
+if "%1"=="--build" set "NEED_BUILD=1"
+if "%1"=="-b" set "NEED_BUILD=1"
+
+if "!NEED_BUILD!"=="1" (
+    echo [1/2] Uygulama derleniyor (ilk calistirmada bagimliliklar hazirlaniyor)...
+    call ".\mvnw.cmd" -q package
+    if errorlevel 1 (
+        echo.
+        echo Derleme sirasinda hata olustu. Yukaridaki mesajlari kontrol edin.
+        pause
+        exit /b 1
+    )
+    echo [2/2] Uygulama baslatiliyor...
+) else (
+    echo TransitRoute baslatiliyor...
 )
 
-echo [2/2] Uygulama baslatiliyor...
 "!JAVA_HOME!\bin\java.exe" -cp "target\classes;target\dependency\*" com.ulasim.hesaplama.Launcher
 
 if errorlevel 1 (

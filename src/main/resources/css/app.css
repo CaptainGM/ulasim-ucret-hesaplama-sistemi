@@ -1,136 +1,460 @@
+/* ==========================================================================
+   TransitRoute Modern Tasarım Sistemi & CSS Tokenları
+   ========================================================================== */
+
 .root {
-    -bg: #f1f5f9;
-    -surface: #ffffff;
+    -bg-app: #f8fafc;
+    -bg-surface: #ffffff;
+    -bg-sidebar: #ffffff;
+    -bg-muted: #f1f5f9;
+    -bg-card-hover: #fcfdfe;
+
     -primary: #2563eb;
-    -primary-dark: #1d4ed8;
-    -text: #1f2937;
-    -muted: #6b7280;
-    -border: #e2e8f0;
-    -success: #16a34a;
-    -danger: #dc2626;
+    -primary-hover: #1d4ed8;
+    -primary-light: #eff6ff;
 
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-background-color: -bg;
+    -emerald: #10b981;
+    -emerald-light: #ecfdf5;
+    -emerald-border: #a7f3d0;
+
+    -amber: #f59e0b;
+    -amber-light: #fef3c7;
+
+    -rose: #ef4444;
+    -rose-light: #fef2f2;
+
+    -purple: #8b5cf6;
+    -purple-light: #f5f3ff;
+
+    -text-main: #0f172a;
+    -text-body: #334155;
+    -text-muted: #64748b;
+    -text-light: #94a3b8;
+
+    -border-subtle: #e2e8f0;
+    -border-focus: #3b82f6;
+
+    -fx-font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+    -fx-background-color: -bg-app;
 }
 
-.form-card {
-    -fx-background-color: -surface;
+/* ==========================================================================
+   Sidebar & Layout
+   ========================================================================== */
+
+.sidebar-scroll {
+    -fx-background-color: -bg-sidebar;
+    -fx-background: -bg-sidebar;
+    -fx-border-color: transparent -border-subtle transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 0;
+}
+
+.sidebar-scroll > .viewport {
+    -fx-background-color: -bg-sidebar;
+}
+
+.sidebar-panel {
+    -fx-background-color: -bg-sidebar;
+}
+
+/* Header & Marka */
+.brand-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-main;
+}
+
+.brand-subtitle {
+    -fx-font-size: 11px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -text-muted;
+}
+
+.section-mini-header {
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-light;
+    -fx-letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   Kartlar (Paneller, Kontroller)
+   ========================================================================== */
+
+.control-card {
+    -fx-background-color: -bg-surface;
+    -fx-background-radius: 12;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+    -fx-padding: 12;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.04), 8, 0, 0, 2);
+}
+
+.preset-card {
+    -fx-background-color: -bg-muted;
     -fx-background-radius: 10;
-    -fx-border-color: -border;
+    -fx-padding: 10;
+    -fx-border-color: -border-subtle;
     -fx-border-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
-    -fx-padding: 16;
 }
+
+.preset-chip {
+    -fx-background-color: -bg-surface;
+    -fx-text-fill: -text-body;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+}
+.preset-chip:hover {
+    -fx-background-color: -primary-light;
+    -fx-text-fill: -primary;
+    -fx-border-color: -primary;
+}
+
+.btn-swap {
+    -fx-background-color: transparent;
+    -fx-text-fill: -primary;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+    -fx-padding: 2 6;
+}
+.btn-swap:hover {
+    -fx-underline: true;
+}
+
+/* ==========================================================================
+   Form Elemanları (TextField, ComboBox)
+   ========================================================================== */
 
 .field-label {
-    -fx-font-size: 12px;
-    -fx-text-fill: -muted;
-    -fx-font-weight: bold;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text-muted;
 }
 
-.text-field, .combo-box {
-    -fx-background-color: -bg;
+.text-field {
+    -fx-background-color: -bg-muted;
+    -fx-background-radius: 8;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
+    -fx-padding: 7 10;
+    -fx-font-size: 12px;
+    -fx-text-fill: -text-main;
+}
+.text-field:focused {
+    -fx-background-color: -bg-surface;
+    -fx-border-color: -border-focus;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.15), 6, 0, 0, 0);
+}
+
+.text-field-mini {
+    -fx-font-size: 11px;
+    -fx-padding: 3 6;
     -fx-background-radius: 6;
-    -fx-border-color: -border;
     -fx-border-radius: 6;
-    -fx-padding: 6 8;
+}
+
+.coord-row {
+    -fx-font-size: 10px;
+    -fx-text-fill: -text-muted;
+}
+
+.combo-box {
+    -fx-background-color: -bg-muted;
+    -fx-background-radius: 8;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
+    -fx-padding: 4 8;
+    -fx-font-size: 12px;
+}
+.combo-box:hover {
+    -fx-border-color: #cbd5e1;
+}
+.combo-box:focused {
+    -fx-background-color: -bg-surface;
+    -fx-border-color: -border-focus;
 }
 
 .field-error {
-    -fx-border-color: -danger;
+    -fx-border-color: -rose;
     -fx-border-width: 1.5;
 }
 
+.traffic-hint {
+    -fx-font-size: 11px;
+    -fx-text-fill: -text-muted;
+    -fx-wrap-text: true;
+}
+
+.traffic-live-badge {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+    -fx-border-color: #fde68a;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 10;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+
+/* ==========================================================================
+   Butonlar
+   ========================================================================== */
+
 .button-primary {
-    -fx-background-color: -primary;
+    -fx-background-color: linear-gradient(to right, #2563eb, #1d4ed8);
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 6;
-    -fx-padding: 10 22;
+    -fx-font-weight: 700;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-padding: 10 18;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.3), 8, 0, 0, 2);
+}
+.button-primary:hover {
+    -fx-background-color: linear-gradient(to right, #1d4ed8, #1e40af);
+}
+.button-primary:pressed {
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.button-secondary {
+    -fx-background-color: -bg-muted;
+    -fx-text-fill: -text-body;
+    -fx-font-weight: 600;
+    -fx-font-size: 12px;
+    -fx-background-radius: 8;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 8;
+    -fx-padding: 9 14;
     -fx-cursor: hand;
 }
-.button-primary:hover { -fx-background-color: -primary-dark; }
+.button-secondary:hover {
+    -fx-background-color: #e2e8f0;
+}
 
 .button-toggle {
-    -fx-background-color: -surface;
-    -fx-text-fill: -text;
-    -fx-border-color: -border;
+    -fx-background-color: -bg-surface;
+    -fx-text-fill: -text-body;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-border-color: -border-subtle;
     -fx-border-radius: 6;
     -fx-background-radius: 6;
-    -fx-padding: 6 12;
+    -fx-padding: 4 8;
     -fx-cursor: hand;
-    -fx-font-size: 12px;
 }
-.button-toggle:hover { -fx-border-color: -primary; }
+.button-toggle:hover {
+    -fx-border-color: -primary;
+}
 .button-toggle:selected {
     -fx-background-color: -primary;
     -fx-text-fill: white;
     -fx-border-color: -primary;
 }
 
-.route-card {
-    -fx-background-color: -surface;
+/* ==========================================================================
+   Özet ve Kullanıcı Bilgi Rozeti
+   ========================================================================== */
+
+.user-info-badge {
+    -fx-background-color: -bg-muted;
+    -fx-text-fill: -text-body;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 6;
+    -fx-padding: 6 10;
+}
+
+.summary-card {
+    -fx-background-color: linear-gradient(to bottom right, #eff6ff, #f0fdf4);
     -fx-background-radius: 10;
-    -fx-border-color: -border;
+    -fx-border-color: #bfdbfe;
     -fx-border-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 6, 0, 0, 2);
+    -fx-padding: 10 12;
+}
+
+.summary-title {
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #1e3a8a;
+}
+
+.summary-body {
+    -fx-font-size: 11px;
+    -fx-text-fill: #1e293b;
+    -fx-line-spacing: 2;
+}
+
+/* ==========================================================================
+   Rota Kartları (Google Maps / Citymapper Esintisi)
+   ========================================================================== */
+
+.route-card {
+    -fx-background-color: -bg-surface;
+    -fx-background-radius: 12;
+    -fx-border-color: -border-subtle;
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
     -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.05), 8, 0, 0, 2);
     -fx-cursor: hand;
 }
 .route-card:hover {
+    -fx-background-color: -bg-card-hover;
     -fx-border-color: -primary;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.25), 10, 0, 0, 3);
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.18), 12, 0, 0, 4);
+    -fx-translate-y: -1;
 }
 
 .route-title {
-    -fx-font-size: 15px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -text;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -text-main;
 }
 
-.route-badge {
-    -fx-background-color: -bg;
-    -fx-background-radius: 12;
-    -fx-padding: 3 10;
-    -fx-font-size: 11px;
-    -fx-text-fill: -muted;
-    -fx-font-weight: bold;
-}
-
-.route-badge-price {
-    -fx-background-color: derive(-success, 85%);
-    -fx-text-fill: -success;
-}
-
-.segment-row {
-    -fx-padding: 4 0;
-    -fx-font-size: 12px;
-    -fx-text-fill: -text;
-}
-
-.segment-icon {
-    -fx-font-size: 16px;
+.metric-highlight {
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-text-fill: -primary;
 }
 
 .segment-meta {
     -fx-font-size: 11px;
-    -fx-text-fill: -muted;
+    -fx-font-weight: 500;
+    -fx-text-fill: -text-muted;
 }
 
-.section-title {
-    -fx-font-size: 13px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -muted;
+.route-action-link {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -primary;
 }
+
+/* Rozetler */
+.route-badge {
+    -fx-background-radius: 9999;
+    -fx-padding: 3 8;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.route-badge-price {
+    -fx-background-color: -emerald-light;
+    -fx-text-fill: #065f46;
+    -fx-border-color: -emerald-border;
+    -fx-border-radius: 9999;
+    -fx-font-size: 13px;
+    -fx-padding: 4 10;
+}
+
+.badge-fast {
+    -fx-background-color: #dbeafe;
+    -fx-text-fill: #1e40af;
+}
+
+.badge-cheap {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #15803d;
+}
+
+.badge-taxi {
+    -fx-background-color: #fef9c3;
+    -fx-text-fill: #854d0e;
+}
+
+.badge-tram {
+    -fx-background-color: #ffedd5;
+    -fx-text-fill: #9a3412;
+}
+
+.badge-general {
+    -fx-background-color: -bg-muted;
+    -fx-text-fill: -text-body;
+}
+
+/* Hap (Pill) Rozetler */
+.badge-pill {
+    -fx-background-radius: 9999;
+    -fx-padding: 2 7;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+}
+
+.badge-saving {
+    -fx-background-color: #ecfdf5;
+    -fx-text-fill: #047857;
+}
+
+.badge-eco {
+    -fx-background-color: #f0fdf4;
+    -fx-text-fill: #166534;
+}
+
+.badge-calorie {
+    -fx-background-color: #fff1f2;
+    -fx-text-fill: #be123c;
+}
+
+/* ==========================================================================
+   Adım Adım Zaman Çizelgesi (Timeline / Stepper)
+   ========================================================================== */
+
+.timeline-container {
+    -fx-padding: 4 0;
+}
+
+.step-icon {
+    -fx-font-size: 14px;
+    -fx-min-width: 26px;
+    -fx-min-height: 26px;
+    -fx-alignment: center;
+    -fx-background-radius: 50%;
+    -fx-background-color: -bg-muted;
+}
+.step-icon-otobus { -fx-background-color: #dbeafe; }
+.step-icon-tramvay { -fx-background-color: #ffedd5; }
+.step-icon-taksi { -fx-background-color: #fef9c3; }
+.step-icon-yurume { -fx-background-color: #f1f5f9; }
+.step-icon-transfer { -fx-background-color: #f3e8ff; }
+
+.step-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text-main;
+}
+
+.step-meta {
+    -fx-font-size: 10px;
+    -fx-text-fill: -text-muted;
+}
+
+.step-type-badge {
+    -fx-background-radius: 4;
+    -fx-padding: 2 6;
+    -fx-font-size: 9px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -text-muted;
+    -fx-background-color: -bg-muted;
+}
+.badge-otobus { -fx-background-color: #dbeafe; -fx-text-fill: #1e40af; }
+.badge-tramvay { -fx-background-color: #ffedd5; -fx-text-fill: #9a3412; }
+.badge-taksi { -fx-background-color: #fef9c3; -fx-text-fill: #854d0e; }
+.badge-yurume { -fx-background-color: #f1f5f9; -fx-text-fill: #475569; }
+.badge-transfer { -fx-background-color: #f3e8ff; -fx-text-fill: #6b21a8; }
 
 .empty-hint {
-    -fx-font-size: 13px;
-    -fx-text-fill: -muted;
+    -fx-font-size: 12px;
+    -fx-text-fill: -text-muted;
     -fx-wrap-text: true;
-}
-
-.app-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: -text;
+    -fx-padding: 10;
 }

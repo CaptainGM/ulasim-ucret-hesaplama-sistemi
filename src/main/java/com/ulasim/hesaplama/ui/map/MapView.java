@@ -16,47 +16,98 @@ import java.util.Locale;
 import java.util.function.BiConsumer;
 
 /**
- * JDK 26 no longer ships the {@code jdk.jsobject} module, so {@code netscape.javascript.JSObject}
- * is unavailable here. All Java-to-JS calls go through {@link WebEngine#executeScript}, and
- * JS-to-Java clicks are relayed via the classic {@code window.status} event instead of a JSObject bridge.
+ * Leaflet tabanlı haritayı JavaFX WebView üzerinde barındıran ve
+ * Java ile JavaScript (çift yönlü) etkileşimini yöneten bileşen.
  */
 public class MapView {
     private final WebView webView = new WebView();
     private final WebEngine engine = webView.getEngine();
     private final Collection<Durak> baslangicDuraklari;
-    private final PauseTransition resizeDebounce = new PauseTransition(Duration.millis(200));
+    private final PauseTransition resizeDebounce = new PauseTransition(Duration.millis(150));
     private boolean hazir = false;
 
-    public MapView(Collection<Durak> duraklar, BiConsumer<Double, Double> onMapClick) {
+    public interface StopSelectListener {
+        void onStopSelected(boolean isStart, double lat, double lon, String stopName);
+    }
+
+    private Runnable onReadyCallback;
+    private Rota bekleyenRota;
+
+    public void setOnReady(Runnable onReady) {
+        this.onReadyCallback = onReady;
+        if (hazir && onReady != null) {
+            onReady.run();
+        }
+    }
+
+    public MapView(Collection<Durak> duraklar, BiConsumer<Double, Double> onMapClick, StopSelectListener onStopSelect) {
         this.baslangicDuraklari = duraklar;
+        engine.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 TransitRoute/2.0");
         resizeDebounce.setOnFinished(e -> calistir("invalidateSize()"));
+
 
         engine.getLoadWorker().stateProperty().addListener((obs, oldState, newState) -> {
             if (newState == Worker.State.SUCCEEDED) {
                 hazir = true;
                 calistir("setStops(" + duraklarJson() + ")");
-                calistir("invalidateSize()");
+                calistir("triggerResizeSequence()");
+
+                if (onReadyCallback != null) {
+                    onReadyCallback.run();
+                }
+                if (bekleyenRota != null) {
+                    drawRoute(bekleyenRota);
+                    bekleyenRota = null;
+                }
             } else if (newState == Worker.State.FAILED) {
                 System.err.println("Harita yüklenemedi: " + engine.getLoadWorker().getException());
             }
         });
 
+
         engine.setOnStatusChanged(event -> {
             String veri = event.getData();
             if (veri == null || veri.isBlank()) return;
+
+            // Durak popup butonundan gelen seçim: STOP_SELECT:START/DEST:lat:lon:name:timestamp
+            if (veri.startsWith("STOP_SELECT:")) {
+                String[] parca = veri.split(":", 6);
+                if (parca.length >= 5 && onStopSelect != null) {
+                    boolean isStart = "START".equalsIgnoreCase(parca[1]);
+                    try {
+                        double lat = Double.parseDouble(parca[2]);
+                        double lon = Double.parseDouble(parca[3]);
+                        String name = parca[4];
+                        onStopSelect.onStopSelected(isStart, lat, lon, name);
+                    } catch (NumberFormatException ignored) {}
+                }
+                return;
+            }
+
+            // Doğrudan haritaya tıklama: MAP_CLICK:lat:lon:timestamp veya lat,lon
+            if (veri.startsWith("MAP_CLICK:")) {
+                String[] parca = veri.split(":");
+                if (parca.length >= 3 && onMapClick != null) {
+                    try {
+                        double lat = Double.parseDouble(parca[1]);
+                        double lon = Double.parseDouble(parca[2]);
+                        onMapClick.accept(lat, lon);
+                    } catch (NumberFormatException ignored) {}
+                }
+                return;
+            }
+
+            // Geriye dönük uyumluluk (lat,lon)
             String[] parca = veri.split(",");
-            if (parca.length < 2) return;
-            try {
-                double lat = Double.parseDouble(parca[0]);
-                double lon = Double.parseDouble(parca[1]);
-                onMapClick.accept(lat, lon);
-            } catch (NumberFormatException ignored) {
-                // haritadan gelen başka bir status mesajı, yok say
+            if (parca.length >= 2 && onMapClick != null) {
+                try {
+                    double lat = Double.parseDouble(parca[0]);
+                    double lon = Double.parseDouble(parca[1]);
+                    onMapClick.accept(lat, lon);
+                } catch (NumberFormatException ignored) {}
             }
         });
 
-        // Layout değişince (bölme çubuğu, pencere boyutu) haritayı yeniden ölçeklendir;
-        // ard arda gelen olaylar tek bir gecikmeli invalidateSize() çağrısına indirgenir.
         webView.widthProperty().addListener((obs, o, n) -> {
             resizeDebounce.stop();
             resizeDebounce.playFromStart();
@@ -83,6 +134,11 @@ public class MapView {
     }
 
     public void drawRoute(Rota rota) {
+        if (!hazir) {
+            bekleyenRota = rota;
+            return;
+        }
+
         JSONArray segmentler = new JSONArray();
         for (RotaSegmenti segment : rota.getSegmentler()) {
             JSONObject obj = new JSONObject();
@@ -99,13 +155,17 @@ public class MapView {
         calistir("drawRoute(" + segmentler + ")");
     }
 
+
+    public void invalidateSize() {
+        calistir("triggerResizeSequence()");
+    }
+
     private void calistir(String script) {
         if (!hazir) return;
         try {
             engine.executeScript(script);
         } catch (Exception e) {
             System.err.println("Harita komutu çalıştırılamadı: " + script);
-            e.printStackTrace();
         }
     }
 

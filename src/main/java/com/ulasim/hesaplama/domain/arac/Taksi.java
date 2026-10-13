@@ -1,5 +1,7 @@
 package com.ulasim.hesaplama.domain.arac;
 
+import com.ulasim.hesaplama.model.TrafikDurumu;
+
 public class Taksi extends Arac {
     private static final double ACILIS_UCRETI = 10.0;
     private static final double KM_UCRETI = 4.0;
@@ -10,12 +12,15 @@ public class Taksi extends Arac {
     }
 
     @Override
-    public double ucretHesapla(double mesafe) {
-        return ACILIS_UCRETI + (mesafe * KM_UCRETI);
+    public double ucretHesapla(double mesafe, TrafikDurumu trafik) {
+        TrafikDurumu t = (trafik != null) ? trafik : TrafikDurumu.NORMAL;
+        return ACILIS_UCRETI + (mesafe * KM_UCRETI * t.getTaksiMaliyetKatsayisi());
     }
 
     @Override
-    public double sureHesapla(double mesafe) {
-        return (mesafe / ORTALAMA_HIZ) * 60;
+    public double sureHesapla(double mesafe, TrafikDurumu trafik) {
+        TrafikDurumu t = (trafik != null) ? trafik : TrafikDurumu.NORMAL;
+        return (mesafe / ORTALAMA_HIZ) * 60 * t.getSureKatsayisi();
     }
 }
+

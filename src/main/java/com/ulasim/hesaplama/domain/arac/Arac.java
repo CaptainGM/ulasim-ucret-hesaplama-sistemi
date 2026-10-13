@@ -1,5 +1,7 @@
 package com.ulasim.hesaplama.domain.arac;
 
+import com.ulasim.hesaplama.model.TrafikDurumu;
+
 public abstract class Arac {
     public final String plaka;
     public final String tip;
@@ -9,6 +11,15 @@ public abstract class Arac {
         this.tip = tip;
     }
 
-    public abstract double ucretHesapla(double mesafe);
-    public abstract double sureHesapla(double mesafe);
+    public double ucretHesapla(double mesafe) {
+        return ucretHesapla(mesafe, TrafikDurumu.NORMAL);
+    }
+
+    public double sureHesapla(double mesafe) {
+        return sureHesapla(mesafe, TrafikDurumu.NORMAL);
+    }
+
+    public abstract double ucretHesapla(double mesafe, TrafikDurumu trafik);
+    public abstract double sureHesapla(double mesafe, TrafikDurumu trafik);
 }
+

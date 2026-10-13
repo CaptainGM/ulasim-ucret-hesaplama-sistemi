@@ -9,6 +9,7 @@ import com.ulasim.hesaplama.model.Durak;
 import com.ulasim.hesaplama.model.Konum;
 import com.ulasim.hesaplama.model.Rota;
 import com.ulasim.hesaplama.model.RotaSegmenti;
+import com.ulasim.hesaplama.model.TrafikDurumu;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,11 +20,17 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Ulaşım ağı grafını yöneten, çok modlu (otobüs, tramvay, taksi, yürüme)
+ * rota hesaplamalarını Dijkstra algoritması ve anlık trafik koşullarıyla
+ * optimize eden ana servis katmanı.
+ */
 public class UlasimSistemi {
-    private static final double YURUME_HIZI = 5.0;
-    private static final double MAKSIMUM_YURUME_MESAFESI = 3.0;
+    private static final double YURUME_HIZI = 5.0; // km/s
+    private static final double MAKSIMUM_YURUME_MESAFESI = 2.5; // km
 
     private final UlasimGrafi graf = new UlasimGrafi();
 
@@ -48,6 +55,7 @@ public class UlasimSistemi {
         JSONObject jsonObject = new JSONObject(jsonContent.toString());
         JSONArray durakArray = jsonObject.getJSONArray("duraklar");
 
+        // 1. Durakları graf nesnesine ekle
         for (int i = 0; i < durakArray.length(); i++) {
             JSONObject durakObj = durakArray.getJSONObject(i);
 
@@ -61,6 +69,7 @@ public class UlasimSistemi {
             graf.durakEkle(new Durak(id, name, type, lat, lon, sonDurak));
         }
 
+        // 2. Hat bağlantılarını ekle (Çift yönlü hat desteği ile)
         for (int i = 0; i < durakArray.length(); i++) {
             JSONObject durakObj = durakArray.getJSONObject(i);
             String durakId = durakObj.getString("id");
@@ -77,6 +86,8 @@ public class UlasimSistemi {
 
                     String aracTipi = graf.getDurak(durakId).tip.equals("bus") ? "otobus" : "tramvay";
                     graf.baglantiEkle(durakId, stopId, aracTipi, mesafe, sure, ucret);
+                    // Gerçek toplu taşıma şebekesinde araçlar çift yönlü çalışır
+                    graf.baglantiEkle(stopId, durakId, aracTipi, mesafe, sure, ucret);
                 }
             }
 
@@ -91,6 +102,7 @@ public class UlasimSistemi {
             }
         }
 
+        // 3. Varsa özel rota hatlarını yükle
         if (jsonObject.has("rotaHatlari") && !jsonObject.isNull("rotaHatlari")) {
             JSONArray hatlarArray = jsonObject.getJSONArray("rotaHatlari");
             for (int i = 0; i < hatlarArray.length(); i++) {
@@ -109,127 +121,178 @@ public class UlasimSistemi {
     }
 
     public List<Rota> rotaHesapla(Konum baslangic, Konum hedef, Yolcu yolcu) {
-        List<Rota> rotalar = new ArrayList<>();
-
-        hesaplaTaksiRotasi(baslangic, hedef, rotalar);
-        hesaplaTopluTasimaRotasi(baslangic, hedef, rotalar);
-        hesaplaEnKisaYolRotasi(baslangic, hedef, "sure", rotalar);
-        hesaplaEnKisaYolRotasi(baslangic, hedef, "ucret", rotalar);
-
-        Collections.sort(rotalar);
-
-        return rotalar;
+        return rotaHesapla(baslangic, hedef, yolcu, TrafikDurumu.NORMAL);
     }
 
-    private void hesaplaTaksiRotasi(Konum baslangic, Konum hedef, List<Rota> rotalar) {
-        Rota taksiRota = new Rota("Taksi ile Direkt Rota");
+    public List<Rota> rotaHesapla(Konum baslangic, Konum hedef, Yolcu yolcu, TrafikDurumu trafik) {
+        List<Rota> rotalar = new ArrayList<>();
+        TrafikDurumu aktifTrafik = (trafik != null) ? trafik : TrafikDurumu.NORMAL;
+
+        // 1. Direkt Taksi Rotası
+        double referansTaksiUcreti = hesaplaTaksiRotasi(baslangic, hedef, aktifTrafik, rotalar);
+
+        // 2. Çok Modlu Toplu Taşıma Rotaları (Dijkstra)
+        hesaplaTopluTasimaRotasi(baslangic, hedef, "sure", "En Hızlı Toplu Taşıma", aktifTrafik, rotalar);
+        hesaplaTopluTasimaRotasi(baslangic, hedef, "ucret", "En Ekonomik Toplu Taşıma", aktifTrafik, rotalar);
+
+        // Benzer/tekrar eden rotaları filtrele
+        List<Rota> tekilRotalar = filtreleBenzerRotalar(rotalar);
+
+        // Analitik değerleri ve rozetleri ata
+        etiketleVeAnalizEt(tekilRotalar, referansTaksiUcreti, aktifTrafik);
+
+        return tekilRotalar;
+    }
+
+    private double hesaplaTaksiRotasi(Konum baslangic, Konum hedef, TrafikDurumu trafik, List<Rota> rotalar) {
+        Rota taksiRota = new Rota("Direkt Taksi");
         double toplamMesafe = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, hedef);
         Taksi taksi = new Taksi("TAX001");
-        double taksiUcret = taksi.ucretHesapla(toplamMesafe);
-        double taksiSure = taksi.sureHesapla(toplamMesafe);
+        double taksiUcret = taksi.ucretHesapla(toplamMesafe, trafik);
+        double taksiSure = taksi.sureHesapla(toplamMesafe, trafik);
 
-        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Noktası", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
-        Durak hedefDurak = new Durak("hedef", "Hedef Noktası", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
+        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Konumu", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
+        Durak hedefDurak = new Durak("hedef", "Varış Konumu", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
 
-        RotaSegmenti taksiSegmenti = new RotaSegmenti("taksi", baslangicDurak, hedefDurak, toplamMesafe, taksiSure, taksiUcret, null);
+        RotaSegmenti taksiSegmenti = new RotaSegmenti("taksi", baslangicDurak, hedefDurak, toplamMesafe, taksiSure, taksiUcret, "taksi");
         taksiRota.ekleSegment(taksiSegmenti);
+        taksiRota.setRozet("🚖 Direkt Taksi");
+        taksiRota.setTrafikDurumu(trafik);
 
         rotalar.add(taksiRota);
+        return taksiUcret;
     }
 
-    private void hesaplaTopluTasimaRotasi(Konum baslangic, Konum hedef, List<Rota> rotalar) {
-        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Noktası", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
-        Durak hedefDurak = new Durak("hedef", "Hedef Noktası", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
-
+    private void hesaplaTopluTasimaRotasi(Konum baslangic, Konum hedef, String kriterTipi, String rotaAdi, TrafikDurumu trafik, List<Rota> rotalar) {
         Durak enYakinBaslangicDuragi = graf.enYakinDurakBul(baslangic);
         Durak enYakinHedefDuragi = graf.enYakinDurakBul(hedef);
 
-        Rota topluTasimaRota = new Rota("Toplu Taşıma Rotası");
-
-        ekleYurumeTaksiSegmenti(topluTasimaRota, baslangicDurak, enYakinBaslangicDuragi);
-
-        Dijkstra dijkstra = new Dijkstra(graf);
-        List<RotaSegmenti> topluTasimaYolu = dijkstra.enKisaYoluBul(enYakinBaslangicDuragi, enYakinHedefDuragi, "sure");
-        for (RotaSegmenti segment : topluTasimaYolu) {
-            topluTasimaRota.ekleSegment(segment);
+        if (enYakinBaslangicDuragi == null || enYakinHedefDuragi == null) {
+            return;
         }
 
-        ekleYurumeTaksiSegmenti(topluTasimaRota, enYakinHedefDuragi, hedefDurak);
-
-        rotalar.add(topluTasimaRota);
-    }
-
-    private void hesaplaEnKisaYolRotasi(Konum baslangic, Konum hedef, String kriterTipi, List<Rota> rotalar) {
-        String rotaAdi = kriterTipi.equals("ucret") ? "En Ekonomik Rota" : "En Hızlı Rota";
-
-        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Noktası", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
-        Durak hedefDurak = new Durak("hedef", "Hedef Noktası", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
-
-        Durak enYakinBaslangicDuragi = graf.enYakinDurakBul(baslangic);
-        Durak enYakinHedefDuragi = graf.enYakinDurakBul(hedef);
-
-        double baslangicMesafesi = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, enYakinBaslangicDuragi.getKonum());
-        double bitisMesafesi = KonumYoneticisi.getInstance().mesafeHesapla(hedef, enYakinHedefDuragi.getKonum());
-
-        boolean baslangicYurunebilir = baslangicMesafesi <= MAKSIMUM_YURUME_MESAFESI;
-        boolean bitisYurunebilir = bitisMesafesi <= MAKSIMUM_YURUME_MESAFESI;
-
-        double taksiMesafe = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, hedef);
-        Taksi taksi = new Taksi("TAX001");
-        double taksiSure = taksi.sureHesapla(taksiMesafe);
-        double taksiUcret = taksi.ucretHesapla(taksiMesafe);
+        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Konumu", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
+        Durak hedefDurak = new Durak("hedef", "Varış Konumu", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
 
         Dijkstra dijkstra = new Dijkstra(graf);
         List<RotaSegmenti> topluTasimaYolu = dijkstra.enKisaYoluBul(enYakinBaslangicDuragi, enYakinHedefDuragi, kriterTipi);
 
-        double topluTasimaUcret = 0;
-        double topluTasimaSure = 0;
-        for (RotaSegmenti segment : topluTasimaYolu) {
-            topluTasimaUcret += segment.getUcret();
-            topluTasimaSure += segment.getSure();
-        }
-
-        double baslangicUcret = baslangicYurunebilir ? 0 : taksi.ucretHesapla(baslangicMesafesi);
-        double bitisUcret = bitisYurunebilir ? 0 : taksi.ucretHesapla(bitisMesafesi);
-
-        double baslangicSure = baslangicYurunebilir ?
-                (baslangicMesafesi / YURUME_HIZI) * 60 : taksi.sureHesapla(baslangicMesafesi);
-        double bitisSure = bitisYurunebilir ?
-                (bitisMesafesi / YURUME_HIZI) * 60 : taksi.sureHesapla(bitisMesafesi);
-
-        topluTasimaUcret += baslangicUcret + bitisUcret;
-        topluTasimaSure += baslangicSure + bitisSure;
-
-        if (kriterTipi.equals("ucret") && taksiUcret <= topluTasimaUcret) {
-            return;
-        } else if (kriterTipi.equals("sure") && taksiSure <= topluTasimaSure) {
+        if (topluTasimaYolu.isEmpty() && !enYakinBaslangicDuragi.equals(enYakinHedefDuragi)) {
             return;
         }
 
-        Rota enKisaRota = new Rota(rotaAdi);
+        Rota rota = new Rota(rotaAdi);
 
-        ekleYurumeTaksiSegmenti(enKisaRota, baslangicDurak, enYakinBaslangicDuragi);
+        // Başlangıç noktasından ilk durağa ulaşım (Yürüme veya Taksi)
+        ekleYurumeTaksiSegmenti(rota, baslangicDurak, enYakinBaslangicDuragi, trafik);
 
+        // Toplu taşıma hattı segmentleri (Trafik katsayısı uygulanır)
         for (RotaSegmenti segment : topluTasimaYolu) {
-            enKisaRota.ekleSegment(segment);
+            double duzeltilmisSure = segment.getSure();
+            if ("otobus".equalsIgnoreCase(segment.getAracTipi())) {
+                duzeltilmisSure = segment.getSure() * trafik.getSureKatsayisi();
+            }
+            // Tramvay raylı sistem olduğundan karayolu trafiğinden etkilenmez!
+
+            RotaSegmenti duzeltilmisSegment = new RotaSegmenti(
+                    segment.getTip(),
+                    segment.getBaslangicDurak(),
+                    segment.getBitisDurak(),
+                    segment.getMesafe(),
+                    duzeltilmisSure,
+                    segment.getUcret(),
+                    segment.getAracTipi()
+            );
+            rota.ekleSegment(duzeltilmisSegment);
         }
 
-        ekleYurumeTaksiSegmenti(enKisaRota, enYakinHedefDuragi, hedefDurak);
+        // Son duraktan hedef noktasına ulaşım
+        ekleYurumeTaksiSegmenti(rota, enYakinHedefDuragi, hedefDurak, trafik);
+        rota.setTrafikDurumu(trafik);
 
-        rotalar.add(enKisaRota);
+        rotalar.add(rota);
     }
 
-    private void ekleYurumeTaksiSegmenti(Rota rota, Durak baslangic, Durak hedef) {
+    private void ekleYurumeTaksiSegmenti(Rota rota, Durak baslangic, Durak hedef, TrafikDurumu trafik) {
         double mesafe = KonumYoneticisi.getInstance().mesafeHesapla(baslangic.getKonum(), hedef.getKonum());
+        if (mesafe < 0.05) {
+            return; // Çok yakınsa segment ekleme
+        }
 
         if (mesafe <= MAKSIMUM_YURUME_MESAFESI) {
             double sure = (mesafe / YURUME_HIZI) * 60;
             rota.ekleSegment(new RotaSegmenti("yurume", baslangic, hedef, mesafe, sure, 0.0, "yurume"));
         } else {
             Taksi taksi = new Taksi("TAX001");
-            double ucret = taksi.ucretHesapla(mesafe);
-            double sure = taksi.sureHesapla(mesafe);
+            double ucret = taksi.ucretHesapla(mesafe, trafik);
+            double sure = taksi.sureHesapla(mesafe, trafik);
             rota.ekleSegment(new RotaSegmenti("taksi", baslangic, hedef, mesafe, sure, ucret, "taksi"));
+        }
+    }
+
+    private List<Rota> filtreleBenzerRotalar(List<Rota> rotalar) {
+        List<Rota> sonuc = new ArrayList<>();
+        for (Rota r : rotalar) {
+            boolean duplicate = false;
+            for (Rota mevcut : sonuc) {
+                if (Math.abs(mevcut.getToplamSure() - r.getToplamSure()) < 0.5 &&
+                    Math.abs(mevcut.getToplamUcret() - r.getToplamUcret()) < 0.5 &&
+                    mevcut.getSegmentler().size() == r.getSegmentler().size()) {
+                    duplicate = true;
+                    break;
+                }
+            }
+            if (!duplicate) {
+                sonuc.add(r);
+            }
+        }
+        return sonuc;
+    }
+
+    private void etiketleVeAnalizEt(List<Rota> rotalar, double referansTaksiUcreti, TrafikDurumu trafik) {
+        if (rotalar.isEmpty()) return;
+
+        // Süreye göre sırala
+        rotalar.sort(Comparator.comparingDouble(Rota::getToplamSure));
+
+        Rota enHizli = null;
+        Rota enEkonomik = null;
+        double minSure = Double.MAX_VALUE;
+        double minUcret = Double.MAX_VALUE;
+
+        for (Rota r : rotalar) {
+            r.setTasarrufMiktari(Math.max(0, referansTaksiUcreti - r.getToplamUcret()));
+            if (!r.getRotaAdi().contains("Taksi")) {
+                if (r.getToplamSure() < minSure) {
+                    minSure = r.getToplamSure();
+                    enHizli = r;
+                }
+                if (r.getToplamUcret() < minUcret) {
+                    minUcret = r.getToplamUcret();
+                    enEkonomik = r;
+                }
+            }
+        }
+
+        for (Rota r : rotalar) {
+            if (r.getRotaAdi().contains("Taksi")) {
+                r.setRozet("🚖 Direkt Taksi");
+            } else if (r == enHizli && r == enEkonomik) {
+                r.setRozet("⭐ En Uygun & En Hızlı");
+            } else if (r == enHizli) {
+                r.setRozet("⚡ En Hızlı");
+            } else if (r == enEkonomik) {
+                r.setRozet("💰 En Ekonomik");
+            } else {
+                // Segmentlerinde tramvay var mı?
+                boolean tramvayVar = r.getSegmentler().stream()
+                        .anyMatch(s -> "tramvay".equalsIgnoreCase(s.getAracTipi()));
+                if (tramvayVar) {
+                    r.setRozet("🚊 Raylı Sistem (Trafiksiz)");
+                } else {
+                    r.setRozet("🌿 Toplu Taşıma");
+                }
+            }
         }
     }
 
