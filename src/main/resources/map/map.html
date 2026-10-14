@@ -221,76 +221,91 @@
     pointer-events: auto;
   }
 
-  /* 1. Yol Üzerindeki Turuncu Bağlantı Noktası (Road Anchor Dot) */
+  /* 1. Yol Üzerindeki Bağlantı Noktası (Road Anchor Dot) */
   .route-callout-anchor {
     position: absolute;
     top: 0;
     left: 0;
     transform: translate(-50%, -50%);
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     border-radius: 50%;
     background: #ea580c;
-    border: 2.5px solid #ffffff;
-    box-shadow: 0 0 12px rgba(234, 88, 12, 0.95), 0 0 0 3px rgba(234, 88, 12, 0.35);
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 10px rgba(234, 88, 12, 0.9), 0 0 0 3px rgba(234, 88, 12, 0.35);
     z-index: 3001;
   }
   body.theme-dark .route-callout-anchor {
     background: #f97316;
     border-color: #0f172a;
-    box-shadow: 0 0 14px rgba(249, 115, 22, 1), 0 0 0 3px rgba(249, 115, 22, 0.45);
+    box-shadow: 0 0 12px rgba(249, 115, 22, 1), 0 0 0 3px rgba(249, 115, 22, 0.45);
   }
   .route-callout.callout-tram .route-callout-anchor {
     background: #0284c7;
-    box-shadow: 0 0 12px rgba(2, 132, 199, 0.95), 0 0 0 3px rgba(2, 132, 199, 0.35);
+    box-shadow: 0 0 10px rgba(2, 132, 199, 0.9), 0 0 0 3px rgba(2, 132, 199, 0.35);
   }
-  body.theme-dark .route-callout.callout-tram .route-callout-anchor {
-    background: #38bdf8;
-    box-shadow: 0 0 14px rgba(56, 189, 248, 1), 0 0 0 3px rgba(56, 189, 248, 0.45);
+  .route-callout.callout-bus .route-callout-anchor {
+    background: #2563eb;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.9), 0 0 0 3px rgba(37, 99, 235, 0.35);
   }
 
-  /* 2. Turuncu Noktadan Yukarı Çıkan Yön Oku */
-  .route-callout-arrow {
+  /* 2. Yoldan Dışarı Çıkan Yön Gösterici Ok ve Sap Çizgisi (Leader Stem) */
+  .route-callout-stem {
     position: absolute;
-    bottom: 7px;
+    bottom: 0;
     left: 0;
+    width: 2px;
+    height: 70px;
+    pointer-events: none;
+    z-index: 3002;
+  }
+  .route-callout-stem .stem-arrow {
+    position: absolute;
+    bottom: 6px;
+    left: 50%;
     transform: translateX(-50%);
     width: 0;
     height: 0;
-    border-left: 9px solid transparent;
-    border-right: 9px solid transparent;
-    border-top: 13px solid #ea580c;
-    z-index: 3002;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 10px solid #ea580c;
   }
-  body.theme-dark .route-callout-arrow {
-    border-top-color: #f97316;
+  .route-callout-stem .stem-line {
+    position: absolute;
+    top: 0;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2.5px;
+    background: #ea580c;
+    box-shadow: 0 0 6px rgba(234, 88, 12, 0.6);
   }
-  .route-callout.callout-tram .route-callout-arrow {
+  .route-callout.callout-tram .route-callout-stem .stem-line {
+    background: #0284c7;
+    box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
+  }
+  .route-callout.callout-tram .route-callout-stem .stem-arrow {
     border-top-color: #0284c7;
   }
-  body.theme-dark .route-callout.callout-tram .route-callout-arrow {
-    border-top-color: #38bdf8;
+  .route-callout.callout-bus .route-callout-stem .stem-line {
+    background: #2563eb;
+    box-shadow: 0 0 6px rgba(37, 99, 235, 0.6);
+  }
+  .route-callout.callout-bus .route-callout-stem .stem-arrow {
+    border-top-color: #2563eb;
+  }
+  body.theme-dark .route-callout-stem .stem-line {
+    background: #f97316;
+    box-shadow: 0 0 8px rgba(249, 115, 22, 0.9);
+  }
+  body.theme-dark .route-callout-stem .stem-arrow {
+    border-top-color: #f97316;
   }
 
-  .route-callout-arrow::after {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: -7px;
-    width: 0;
-    height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-top: 11px solid #ffffff;
-  }
-  body.theme-dark .route-callout-arrow::after {
-    border-top-color: #0b1329;
-  }
-
-  /* 3. Büyütülmüş Bilgi Mesaj Kutusu */
+  /* 3. Yoldan Tamamen Uzakta, Havada Duran Bilgi Kartı */
   .route-callout-bubble {
     position: absolute;
-    bottom: 19px;
+    bottom: 74px; /* Yoldan 74px yukarıda, yol hattını asla kapatmaz */
     left: 0;
     transform: translateX(-50%);
     background: #ffffff;
@@ -298,27 +313,35 @@
     border: 2px solid #ea580c;
     border-radius: 12px;
     padding: 9px 18px;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(234, 88, 12, 0.3);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), 0 0 14px rgba(234, 88, 12, 0.25);
     white-space: nowrap;
     text-align: center;
-    max-width: 440px;
+    max-width: 480px;
     z-index: 3003;
     pointer-events: auto;
     cursor: default;
   }
-  body.theme-dark .route-callout-bubble {
-    background: #0b1329;
-    color: #f8fafc;
-    border: 2px solid #f97316;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85), 0 0 18px rgba(249, 115, 22, 0.45);
+  .route-callout.callout-bus .route-callout-bubble {
+    border-color: #2563eb;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), 0 0 14px rgba(37, 99, 235, 0.25);
   }
   .route-callout.callout-tram .route-callout-bubble {
     border-color: #0284c7;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px rgba(2, 132, 199, 0.3);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), 0 0 14px rgba(2, 132, 199, 0.25);
+  }
+  body.theme-dark .route-callout-bubble {
+    background: #0b1329;
+    color: #f8fafc;
+    border-color: #f97316;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.85), 0 0 18px rgba(249, 115, 22, 0.45);
+  }
+  body.theme-dark .route-callout.callout-bus .route-callout-bubble {
+    border-color: #3b82f6;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.85), 0 0 18px rgba(59, 130, 246, 0.45);
   }
   body.theme-dark .route-callout.callout-tram .route-callout-bubble {
     border-color: #38bdf8;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.85), 0 0 18px rgba(56, 189, 248, 0.45);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.85), 0 0 18px rgba(56, 189, 248, 0.45);
   }
 
   .callout-vehicle {
@@ -583,7 +606,10 @@
     return coords;
   }
 
+  var currentRouteRequestId = 0;
+
   async function drawRoute(segmentler) {
+    var reqId = ++currentRouteRequestId;
     map.invalidateSize(true);
     clearRoute();
 
@@ -611,6 +637,9 @@
       
       // Gerçek sokak geometrisini OSRM'den çek
       var streetCoords = await fetchStreetGeometry(seg.coords, seg.tip);
+      if (reqId !== currentRouteRequestId) {
+        return; // Yeni bir rota çizimi başlatılmış, eski asenkron işlemi derhal terk et
+      }
 
       // 1. Arka planla çakışmayı önleyen koruyucu dış casing (Koyu kontur)
       var casingLine = L.polyline(streetCoords, {
@@ -634,6 +663,11 @@
       routeLayers.push(mainLine);
 
       // 3. Yolun Ortasındaki Noktadan Yukarı Çıkan Bilgi Kartı & Oku
+      // Yürüyüş segmenti çok kısaysa (< 0.4 km) haritada gereksiz kalabalık yapmasın, bilgi balonu ekleme
+      if (seg.tip === 'yurume' && (!seg.mesafe || parseFloat(seg.mesafe) < 0.4)) {
+        continue;
+      }
+
       if (streetCoords && streetCoords.length >= 2) {
         var midIndex = Math.floor(streetCoords.length / 2);
         var midCoord = streetCoords[midIndex];
@@ -663,7 +697,10 @@
         var calloutHtml =
           '<div class="route-callout callout-' + badgeType + '">' +
             '<div class="route-callout-anchor"></div>' +
-            '<div class="route-callout-arrow"></div>' +
+            '<div class="route-callout-stem">' +
+              '<div class="stem-line"></div>' +
+              '<div class="stem-arrow"></div>' +
+            '</div>' +
             '<div class="route-callout-bubble">' +
               '<div class="callout-vehicle">' +
                 '<span class="vehicle-tag tag-' + badgeType + '">' + badgeLabel + '</span>' +

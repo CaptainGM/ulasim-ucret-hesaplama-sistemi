@@ -125,15 +125,21 @@ public class UlasimSistemi {
     }
 
     public List<Rota> rotaHesapla(Konum baslangic, Konum hedef, Yolcu yolcu, TrafikDurumu trafik) {
+        return rotaHesapla(baslangic, hedef, "Başlangıç Konumu", "Varış Konumu", yolcu, trafik);
+    }
+
+    public List<Rota> rotaHesapla(Konum baslangic, Konum hedef, String baslangicAdi, String hedefAdi, Yolcu yolcu, TrafikDurumu trafik) {
         List<Rota> rotalar = new ArrayList<>();
         TrafikDurumu aktifTrafik = (trafik != null) ? trafik : TrafikDurumu.NORMAL;
+        String bAdi = (baslangicAdi != null && !baslangicAdi.isBlank()) ? baslangicAdi : "Başlangıç Konumu";
+        String hAdi = (hedefAdi != null && !hedefAdi.isBlank()) ? hedefAdi : "Varış Konumu";
 
         // 1. Direkt Taksi Rotası
-        double referansTaksiUcreti = hesaplaTaksiRotasi(baslangic, hedef, aktifTrafik, rotalar);
+        double referansTaksiUcreti = hesaplaTaksiRotasi(baslangic, hedef, bAdi, hAdi, aktifTrafik, rotalar);
 
         // 2. Çok Modlu Toplu Taşıma Rotaları (Dijkstra)
-        hesaplaTopluTasimaRotasi(baslangic, hedef, "sure", "En Hızlı Toplu Taşıma", aktifTrafik, rotalar);
-        hesaplaTopluTasimaRotasi(baslangic, hedef, "ucret", "En Ekonomik Toplu Taşıma", aktifTrafik, rotalar);
+        hesaplaTopluTasimaRotasi(baslangic, hedef, bAdi, hAdi, "sure", "En Hızlı Toplu Taşıma", aktifTrafik, rotalar);
+        hesaplaTopluTasimaRotasi(baslangic, hedef, bAdi, hAdi, "ucret", "En Ekonomik Toplu Taşıma", aktifTrafik, rotalar);
 
         // Benzer/tekrar eden rotaları filtrele
         List<Rota> tekilRotalar = filtreleBenzerRotalar(rotalar);
@@ -144,7 +150,7 @@ public class UlasimSistemi {
         return tekilRotalar;
     }
 
-    private double hesaplaTaksiRotasi(Konum baslangic, Konum hedef, TrafikDurumu trafik, List<Rota> rotalar) {
+    private double hesaplaTaksiRotasi(Konum baslangic, Konum hedef, String baslangicAdi, String hedefAdi, TrafikDurumu trafik, List<Rota> rotalar) {
         Rota taksiRota = new Rota("Direkt Taksi");
         double kusUcusu = KonumYoneticisi.getInstance().mesafeHesapla(baslangic, hedef);
         double toplamMesafe = Math.round(kusUcusu * 1.25 * 10.0) / 10.0;
@@ -152,8 +158,8 @@ public class UlasimSistemi {
         double taksiUcret = taksi.ucretHesapla(toplamMesafe, trafik);
         double taksiSure = taksi.sureHesapla(toplamMesafe, trafik);
 
-        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Konumu", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
-        Durak hedefDurak = new Durak("hedef", "Varış Konumu", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
+        Durak baslangicDurak = new Durak("baslangic", baslangicAdi, "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
+        Durak hedefDurak = new Durak("hedef", hedefAdi, "özel", hedef.getEnlem(), hedef.getBoylam(), false);
 
         RotaSegmenti taksiSegmenti = new RotaSegmenti("taksi", baslangicDurak, hedefDurak, toplamMesafe, taksiSure, taksiUcret, "taksi");
         taksiRota.ekleSegment(taksiSegmenti);
@@ -164,7 +170,7 @@ public class UlasimSistemi {
         return taksiUcret;
     }
 
-    private void hesaplaTopluTasimaRotasi(Konum baslangic, Konum hedef, String kriterTipi, String rotaAdi, TrafikDurumu trafik, List<Rota> rotalar) {
+    private void hesaplaTopluTasimaRotasi(Konum baslangic, Konum hedef, String baslangicAdi, String hedefAdi, String kriterTipi, String rotaAdi, TrafikDurumu trafik, List<Rota> rotalar) {
         Durak enYakinBaslangicDuragi = graf.enYakinDurakBul(baslangic);
         Durak enYakinHedefDuragi = graf.enYakinDurakBul(hedef);
 
@@ -172,8 +178,8 @@ public class UlasimSistemi {
             return;
         }
 
-        Durak baslangicDurak = new Durak("baslangic", "Başlangıç Konumu", "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
-        Durak hedefDurak = new Durak("hedef", "Varış Konumu", "özel", hedef.getEnlem(), hedef.getBoylam(), false);
+        Durak baslangicDurak = new Durak("baslangic", baslangicAdi, "özel", baslangic.getEnlem(), baslangic.getBoylam(), false);
+        Durak hedefDurak = new Durak("hedef", hedefAdi, "özel", hedef.getEnlem(), hedef.getBoylam(), false);
 
         Dijkstra dijkstra = new Dijkstra(graf);
         List<RotaSegmenti> hamYol = dijkstra.enKisaYoluBul(enYakinBaslangicDuragi, enYakinHedefDuragi, kriterTipi);
@@ -331,8 +337,8 @@ public class UlasimSistemi {
 
     private void ekleYurumeTaksiSegmenti(Rota rota, Durak baslangic, Durak hedef, TrafikDurumu trafik) {
         double mesafe = KonumYoneticisi.getInstance().mesafeHesapla(baslangic.getKonum(), hedef.getKonum());
-        if (mesafe < 0.05) {
-            return; // Çok yakınsa segment ekleme
+        if (mesafe < 0.15) {
+            return; // Çok yakınsa (150m altı) ekstra yürüme segmenti ekleme
         }
 
         if (mesafe <= MAKSIMUM_YURUME_MESAFESI) {

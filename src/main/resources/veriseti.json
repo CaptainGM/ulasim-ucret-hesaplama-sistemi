@@ -104,12 +104,13 @@
       "id": "bus_halkevi",
       "name": "Halkevi (İzmit Merkez)",
       "type": "bus",
-      "lat": 40.76350,
-      "lon": 29.93870,
+      "lat": 40.76196,
+      "lon": 29.92577,
       "sonDurak": false,
       "nextStops": [
         { "stopId": "bus_umuttepe", "mesafe": 6.8, "sure": 18, "ucret": 42.0 },
-        { "stopId": "bus_sekapark", "mesafe": 2.2, "sure": 7, "ucret": 42.0 },
+        { "stopId": "bus_41burda", "mesafe": 2.4, "sure": 7, "ucret": 42.0 },
+        { "stopId": "bus_sekapark", "mesafe": 1.8, "sure": 5, "ucret": 42.0 },
         { "stopId": "bus_anitpark", "mesafe": 0.8, "sure": 3, "ucret": 42.0 },
         { "stopId": "bus_basiskele", "mesafe": 5.2, "sure": 14, "ucret": 42.0 },
         { "stopId": "bus_ozdilek", "mesafe": 6.8, "sure": 15, "ucret": 42.0 },
@@ -127,13 +128,12 @@
       "id": "bus_sekapark",
       "name": "Sekapark Kültür Alanı",
       "type": "bus",
-      "lat": 40.76050,
-      "lon": 29.91400,
+      "lat": 40.76141,
+      "lon": 29.91089,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_halkevi", "mesafe": 2.2, "sure": 7, "ucret": 42.0 },
-        { "stopId": "bus_plajyolu", "mesafe": 1.4, "sure": 5, "ucret": 42.0 },
-        { "stopId": "bus_41burda", "mesafe": 3.0, "sure": 10, "ucret": 42.0 }
+        { "stopId": "bus_halkevi", "mesafe": 1.8, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_plajyolu", "mesafe": 1.4, "sure": 5, "ucret": 42.0 }
       ],
       "transfer": {
         "transferStopId": "tram_sekapark",
@@ -145,13 +145,15 @@
       "id": "bus_yahyakaptan",
       "name": "Yahya Kaptan (Merkez)",
       "type": "bus",
-      "lat": 40.77160,
-      "lon": 29.96010,
+      "lat": 40.76749,
+      "lon": 29.96878,
       "sonDurak": false,
       "nextStops": [
         { "stopId": "bus_otogar", "mesafe": 1.5, "sure": 6, "ucret": 42.0 },
         { "stopId": "bus_sehir_hastanesi", "mesafe": 2.1, "sure": 8, "ucret": 42.0 },
         { "stopId": "bus_symbolavm", "mesafe": 1.8, "sure": 6, "ucret": 42.0 },
+        { "stopId": "bus_yuvam_akarca", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_41burda", "mesafe": 2.5, "sure": 8, "ucret": 42.0 },
         { "stopId": "bus_stadyum", "mesafe": 3.4, "sure": 10, "ucret": 42.0 }
       ],
       "transfer": {
@@ -164,8 +166,8 @@
       "id": "bus_symbolavm",
       "name": "Symbol AVM & Medikal",
       "type": "bus",
-      "lat": 40.77788,
-      "lon": 29.94991,
+      "lat": 40.75787,
+      "lon": 29.97956,
       "sonDurak": false,
       "nextStops": [
         { "stopId": "bus_yahyakaptan", "mesafe": 1.8, "sure": 6, "ucret": 42.0 },
@@ -177,12 +179,14 @@
       "id": "bus_41burda",
       "name": "41 Burda AVM",
       "type": "bus",
-      "lat": 40.77731,
-      "lon": 29.92512,
+      "lat": 40.75663,
+      "lon": 29.94818,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_outlet", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
-        { "stopId": "bus_sekapark", "mesafe": 3.0, "sure": 10, "ucret": 42.0 }
+        { "stopId": "bus_halkevi", "mesafe": 2.4, "sure": 7, "ucret": 42.0 },
+        { "stopId": "bus_outlet", "mesafe": 0.8, "sure": 3, "ucret": 42.0 },
+        { "stopId": "bus_yahyakaptan", "mesafe": 2.5, "sure": 8, "ucret": 42.0 },
+        { "stopId": "bus_symbolavm", "mesafe": 2.5, "sure": 8, "ucret": 42.0 }
       ],
       "transfer": null
     },
@@ -190,12 +194,12 @@
       "id": "bus_outlet",
       "name": "Outlet Center & Fuar",
       "type": "bus",
-      "lat": 40.75100,
-      "lon": 29.93000,
+      "lat": 40.75453,
+      "lon": 29.94585,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_41burda", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
-        { "stopId": "bus_halkevi", "mesafe": 2.4, "sure": 8, "ucret": 42.0 }
+        { "stopId": "bus_41burda", "mesafe": 0.8, "sure": 3, "ucret": 42.0 },
+        { "stopId": "bus_halkevi", "mesafe": 2.8, "sure": 8, "ucret": 42.0 }
       ],
       "transfer": null
     },
@@ -237,8 +241,8 @@
       "id": "bus_plajyolu",
       "name": "Plajyolu Sahil",
       "type": "bus",
-      "lat": 40.75800,
-      "lon": 29.90200,
+      "lat": 40.76009,
+      "lon": 29.88177,
       "sonDurak": false,
       "nextStops": [
         { "stopId": "bus_sekapark", "mesafe": 1.4, "sure": 5, "ucret": 42.0 },
@@ -254,8 +258,8 @@
       "id": "bus_kurucesme",
       "name": "Kuruçeşme (Merkez)",
       "type": "bus",
-      "lat": 40.76500,
-      "lon": 29.88800,
+      "lat": 40.76596,
+      "lon": 29.87452,
       "sonDurak": false,
       "nextStops": [
         { "stopId": "bus_plajyolu", "mesafe": 1.5, "sure": 5, "ucret": 42.0 }
@@ -270,9 +274,8 @@
       "id": "bus_stadyum",
       "name": "Kocaeli Stadyumu (Alikahya)",
       "type": "bus",
-      "lat": 40.76850,
-      "29.99200": 29.99200,
-      "lon": 29.99200,
+      "lat": 40.77508,
+      "lon": 30.01702,
       "sonDurak": true,
       "nextStops": [
         { "stopId": "bus_yahyakaptan", "mesafe": 3.4, "sure": 10, "ucret": 42.0 }
@@ -283,11 +286,12 @@
       "id": "bus_yuvam_akarca",
       "name": "Yuvam Akarca Konutları",
       "type": "bus",
-      "lat": 40.77600,
-      "lon": 29.98000,
+      "lat": 40.77381,
+      "lon": 29.98089,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_otogar", "mesafe": 2.2, "sure": 8, "ucret": 42.0 }
+        { "stopId": "bus_otogar", "mesafe": 1.8, "sure": 6, "ucret": 42.0 },
+        { "stopId": "bus_yahyakaptan", "mesafe": 1.6, "sure": 5, "ucret": 42.0 }
       ],
       "transfer": null
     },
@@ -295,8 +299,8 @@
       "id": "bus_basiskele",
       "name": "Başiskele Sahil Parkı",
       "type": "bus",
-      "lat": 40.72500,
-      "lon": 29.92800,
+      "lat": 40.71593,
+      "lon": 29.91930,
       "sonDurak": true,
       "nextStops": [
         { "stopId": "bus_halkevi", "mesafe": 5.2, "sure": 14, "ucret": 42.0 }

@@ -37,6 +37,9 @@ public final class ScreenshotExporter {
         }
 
         File ciktiDosyasi = new File(dosyaAdi);
+        if (ciktiDosyasi.getParentFile() != null) {
+            ciktiDosyasi.getParentFile().mkdirs();
+        }
         ImageIO.write(bImage, "png", ciktiDosyasi);
         return ciktiDosyasi;
     }
