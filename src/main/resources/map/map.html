@@ -249,95 +249,32 @@
     box-shadow: 0 0 10px rgba(37, 99, 235, 0.9), 0 0 0 3px rgba(37, 99, 235, 0.35);
   }
 
-  /* 2. Yoldan Dışarı Çıkan Yön Gösterici Ok ve Sap Çizgisi (Leader Stem: 200px) */
-  .route-callout-stem {
+  /* 2. Yoldan Dışarı Çıkan Yön Oku ve Çizgisi (SVG Layer) */
+  .route-callout-svg {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 2px;
-    height: 200px;
+    left: -500px;
+    top: -500px;
+    width: 1000px;
+    height: 1000px;
     pointer-events: none;
+    overflow: visible;
     z-index: 3002;
   }
-  .route-callout-stem .stem-arrow-up {
-    position: absolute;
-    bottom: 6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 12px solid #ea580c;
-  }
-  .route-callout-stem .stem-line {
-    position: absolute;
-    top: 6px;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2.5px;
-    background: #ea580c;
-    box-shadow: 0 0 6px rgba(234, 88, 12, 0.6);
-  }
-  .route-callout-stem .stem-arrow-top {
-    position: absolute;
-    top: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 10px solid #ea580c;
-  }
-  .route-callout.callout-tram .route-callout-stem .stem-line {
-    background: #0284c7;
-    box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
-  }
-  .route-callout.callout-tram .route-callout-stem .stem-arrow-up,
-  .route-callout.callout-tram .route-callout-stem .stem-arrow-top {
-    border-bottom-color: #0284c7;
-  }
-  .route-callout.callout-bus .route-callout-stem .stem-line {
-    background: #2563eb;
-    box-shadow: 0 0 6px rgba(37, 99, 235, 0.6);
-  }
-  .route-callout.callout-bus .route-callout-stem .stem-arrow-up,
-  .route-callout.callout-bus .route-callout-stem .stem-arrow-top {
-    border-bottom-color: #2563eb;
-  }
-  body.theme-dark .route-callout-stem .stem-line {
-    background: #f97316;
-    box-shadow: 0 0 8px rgba(249, 115, 22, 0.9);
-  }
-  body.theme-dark .route-callout-stem .stem-arrow-up,
-  body.theme-dark .route-callout-stem .stem-arrow-top {
-    border-bottom-color: #f97316;
-  }
-  body.theme-dark .route-callout.callout-bus .route-callout-stem .stem-line {
-    background: #3b82f6;
-  }
-  body.theme-dark .route-callout.callout-bus .route-callout-stem .stem-arrow-up,
-  body.theme-dark .route-callout.callout-bus .route-callout-stem .stem-arrow-top {
-    border-bottom-color: #3b82f6;
-  }
 
-  /* 3. Yoldan 200px Uzakta, Boş Alanda Havada Duran Bilgi Kartı */
+  /* 3. Yola Göre Boş Alana (Özellikle Sola / Açık Alana) Yerleşen Bilgi Kartı */
   .route-callout-bubble {
     position: absolute;
-    bottom: 204px; /* Yoldan 204px yukarıda, yol ve şehir çizgilerini asla kapatmaz */
-    left: 0;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     background: #ffffff;
     color: #0f172a;
     border: 2px solid #ea580c;
-    border-radius: 12px;
-    padding: 9px 18px;
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28), 0 0 14px rgba(234, 88, 12, 0.25);
+    border-radius: 10px;
+    padding: 7px 12px;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22), 0 0 12px rgba(234, 88, 12, 0.2);
     white-space: nowrap;
     text-align: center;
-    max-width: 480px;
+    width: 280px;
+    box-sizing: border-box;
     z-index: 3003;
     pointer-events: auto;
     cursor: default;
@@ -637,13 +574,125 @@
       totalDist += d;
       dists.push(totalDist);
     }
-    var targetDist = totalDist * 0.52;
+    // Rota koridorunun ferah ana arter kısmına (%65) odaklan
+    var targetDist = totalDist * 0.65;
     for (var i = 1; i < dists.length; i++) {
       if (dists[i] >= targetDist) {
         return coords[i];
       }
     }
     return coords[Math.floor(coords.length / 2)];
+  }
+
+  function findBestCalloutOffset(anchorCoord, streetCoords) {
+    var anchorPt = map.latLngToContainerPoint(anchorCoord);
+    var mapSize = map.getSize();
+
+    // Kart ölçüleri (Kompakt ve okunaklı: w = 280px, h = 60px)
+    var halfW = 140;
+    var halfH = 30;
+
+    // Kullanıcı talebi: "yola göre sola alakasız olan yerlere at işte... gidip sola atsana"
+    // Sol taraftaki mevcut boşluk:
+    var availableLeft = anchorPt.x - 20; // Sol sınırdan 20px pay
+    var solArrowLen = Math.max(50, Math.min(180, availableLeft - (2 * halfW) - 10));
+    var solDx = -(solArrowLen + halfW);
+    // Kart ekranın sol kenarından asla taşmasın:
+    if (anchorPt.x + solDx - halfW < 15) {
+      solDx = 15 + halfW - anchorPt.x;
+      solArrowLen = Math.max(40, -solDx - halfW);
+    }
+
+    var availableRight = (mapSize.x - 20) - anchorPt.x;
+    var sagArrowLen = Math.max(50, Math.min(180, availableRight - (2 * halfW) - 10));
+    var sagDx = (sagArrowLen + halfW);
+    if (anchorPt.x + sagDx + halfW > mapSize.x - 15) {
+      sagDx = (mapSize.x - 15 - halfW) - anchorPt.x;
+      sagArrowLen = Math.max(40, sagDx - halfW);
+    }
+
+    var availableTop = anchorPt.y - 20;
+    var topArrowLen = Math.max(50, Math.min(160, availableTop - (2 * halfH) - 10));
+    var yukariDy = -(topArrowLen + halfH);
+
+    var availableBottom = (mapSize.y - 20) - anchorPt.y;
+    var bottomArrowLen = Math.max(50, Math.min(160, availableBottom - (2 * halfH) - 10));
+    var asagiDy = (bottomArrowLen + halfH);
+
+    // Aday yönler: Boş dağlık alana (SOLA) KULLANICI TALEBİ GEREĞİ EZİCİ ÖNCELİK (bonus: 25000)
+    var candidates = [
+      { name: 'SOL',         dx: solDx,        dy: -10,      edgeX: solDx + halfW,   edgeY: -10,     bonus: 25000 },
+      { name: 'SOL-YUKARI',  dx: solDx * 0.95, dy: -70,      edgeX: solDx*0.95+halfW,edgeY: -70,     bonus: 20000 },
+      { name: 'SOL-ASAGI',   dx: solDx * 0.95, dy: 60,       edgeX: solDx*0.95+halfW,edgeY: 60,      bonus: 18000 },
+      { name: 'YUKARI',      dx: 0,            dy: yukariDy, edgeX: 0,               edgeY: yukariDy+halfH, bonus: 3000 },
+      { name: 'ASAGI',       dx: 0,            dy: asagiDy,  edgeX: 0,               edgeY: asagiDy-halfH, bonus: 2000 },
+      { name: 'SAG-YUKARI',  dx: sagDx * 0.95, dy: -70,      edgeX: sagDx*0.95-halfW,edgeY: -70,     bonus: 500   },
+      { name: 'SAG',         dx: sagDx,        dy: -10,      edgeX: sagDx - halfW,   edgeY: -10,     bonus: 100   }
+    ];
+
+    // Rota sokak noktalarını ekrana çevirip kutu çakışmasını tara
+    var screenPts = [];
+    var step = Math.max(1, Math.floor(streetCoords.length / 120));
+    for (var i = 0; i < streetCoords.length; i += step) {
+      screenPts.push(map.latLngToContainerPoint(streetCoords[i]));
+    }
+
+    var bestCand = candidates[0];
+    var bestScore = -Infinity;
+
+    for (var c = 0; c < candidates.length; c++) {
+      var cand = candidates[c];
+      var bx = anchorPt.x + cand.dx;
+      var by = anchorPt.y + cand.dy;
+
+      var left = bx - halfW;
+      var right = bx + halfW;
+      var top = by - halfH;
+      var bottom = by + halfH;
+
+      // Ekran dışına taşma kontrolü
+      var boundaryPenalty = 0;
+      if (left < 10) boundaryPenalty += (10 - left) * 100;
+      if (right > mapSize.x - 10) boundaryPenalty += (right - (mapSize.x - 10)) * 100;
+      if (top < 10) boundaryPenalty += (10 - top) * 100;
+      if (bottom > mapSize.y - 10) boundaryPenalty += (bottom - (mapSize.y - 10)) * 100;
+
+      // KART KUTUSUNUN GERÇEK YOL NOKTALARIYLA ÇAKIŞMA KONTROLÜ
+      // Not: anchorPt'nin kendi yakınındaki (r < 35px) başlangıç noktalarını hariç tut,
+      // çünkü kılavuz ok zaten oradan karta uzanıyor.
+      var minRoadDist = Infinity;
+      var anyPointInside = false;
+
+      for (var p = 0; p < screenPts.length; p++) {
+        var pt = screenPts[p];
+        var distToAnchor = Math.hypot(pt.x - anchorPt.x, pt.y - anchorPt.y);
+        if (distToAnchor < 35) continue; // Bağlantı noktasının kendisi hariç
+
+        // Gerçek kart kutusunun içinde mi? (4px tolerans payıyla)
+        if (pt.x >= left - 4 && pt.x <= right + 4 && pt.y >= top - 4 && pt.y <= bottom + 4) {
+          anyPointInside = true;
+          break;
+        }
+
+        var dxDist = Math.max(0, Math.max(left - pt.x, pt.x - right));
+        var dyDist = Math.max(0, Math.max(top - pt.y, pt.y - bottom));
+        var d = Math.hypot(dxDist, dyDist);
+        if (d < minRoadDist) {
+          minRoadDist = d;
+        }
+      }
+
+      // KART YOLUN ÜSTÜNE GELİYORSA KESİNLİKLE SEÇİLMEZ (500.000 PUAN CEZA)
+      var roadOverlapPenalty = anyPointInside ? 500000 : 0;
+
+      var score = minRoadDist + cand.bonus - boundaryPenalty - roadOverlapPenalty;
+      if (score > bestScore) {
+        bestScore = score;
+        bestCand = cand;
+      }
+    }
+
+    return bestCand;
   }
 
   var currentRouteRequestId = 0;
@@ -653,37 +702,57 @@
     map.invalidateSize(true);
     clearRoute();
 
-    var tumBoundsNoktalari = [];
     var aktifDuraklar = [];
+    var segmentData = [];
+    var allRouteCoords = [];
 
-    // Önce segmentlerin başlangıç/bitiş noktalarından bounds hesapla ve aktif durakları topla
-    segmentler.forEach(function(s) {
-      tumBoundsNoktalari = tumBoundsNoktalari.concat(s.coords);
-      if (s.baslangic) aktifDuraklar.push(s.baslangic);
-      if (s.bitis) aktifDuraklar.push(s.bitis);
-    });
+    // 1. Önce tüm segmentlerin OSRM sokak geometrilerini çek
+    for (var i = 0; i < segmentler.length; i++) {
+      var seg = segmentler[i];
+      if (seg.baslangic) aktifDuraklar.push(seg.baslangic);
+      if (seg.bitis) aktifDuraklar.push(seg.bitis);
+
+      var streetCoords = await fetchStreetGeometry(seg.coords, seg.tip);
+      if (reqId !== currentRouteRequestId) return;
+      segmentData.push({ seg: seg, streetCoords: streetCoords });
+      allRouteCoords = allRouteCoords.concat(streetCoords);
+    }
 
     // Rotayla alakasız olan tüm durakları haritadan gizle, sadece rotadakileri göster
     guncelleDurakGorunurlugu(aktifDuraklar);
 
-    if (tumBoundsNoktalari.length > 0) {
-      map.fitBounds(L.latLngBounds(tumBoundsNoktalari), {
-        paddingTopLeft: [130, 60],
-        paddingBottomRight: [60, 60],
-        maxZoom: 14
-      });
-    }
+    if (allRouteCoords.length === 0) return;
 
-    // Her segment için sokak geometrisini al, yolu çiz ve yol ortasından dışarı ok çıkan kartı ekle
-    for (var i = 0; i < segmentler.length; i++) {
-      var seg = segmentler[i];
+    // 2. Gerçek sokak geometrisi üzerinden tam rota sınırlarını hesapla
+    var routeBounds = L.latLngBounds(allRouteCoords);
+    var sw = routeBounds.getSouthWest();
+    var ne = routeBounds.getNorthEast();
+    var latSpan = Math.max(0.015, ne.lat - sw.lat);
+    var lngSpan = Math.max(0.025, ne.lng - sw.lng);
+
+    // KULLANICI TALEBİ: "yola göre sola alakasız olan yerlere at işte... gidip sola atsana"
+    // Zoom seviyesini düşürmeden, batıya (SOLA - Derince dağlık boşluğuna) ferah 0.025 derece pay veriyoruz.
+    var westPad = Math.max(0.024, lngSpan * 0.45);
+    var fitBoundsTarget = L.latLngBounds([
+      [sw.lat - latSpan * 0.12, sw.lng - westPad],
+      [ne.lat + latSpan * 0.12, ne.lng + lngSpan * 0.08]
+    ]);
+
+    map.fitBounds(fitBoundsTarget, {
+      padding: [40, 40],
+      maxZoom: 14
+    });
+
+    // Harita projeksiyonunun yeni sınırlara oturması için kısa bir bekleme
+    await new Promise(function(resolve) { setTimeout(resolve, 80); });
+    if (reqId !== currentRouteRequestId) return;
+
+    // 3. Her segment için yolları ve yoldan dışarı çıkan bilgi kartlarını çiz
+    for (var i = 0; i < segmentData.length; i++) {
+      var item = segmentData[i];
+      var seg = item.seg;
+      var streetCoords = item.streetCoords;
       var stil = getRouteStyle(seg.tip, seg.trafik);
-      
-      // Gerçek sokak geometrisini OSRM'den çek
-      var streetCoords = await fetchStreetGeometry(seg.coords, seg.tip);
-      if (reqId !== currentRouteRequestId) {
-        return; // Yeni bir rota çizimi başlatılmış, eski asenkron işlemi derhal terk et
-      }
 
       // 1. Arka planla çakışmayı önleyen koruyucu dış casing (Koyu kontur)
       var casingLine = L.polyline(streetCoords, {
@@ -706,8 +775,7 @@
       }).addTo(map);
       routeLayers.push(mainLine);
 
-      // 3. Yolun Ortasındaki Noktadan Yukarı Çıkan Bilgi Kartı & Oku
-      // Yürüyüş segmenti çok kısaysa (< 0.4 km) haritada gereksiz kalabalık yapmasın, bilgi balonu ekleme
+      // 3. Yolun Ortasındaki Noktadan Dışarı Çıkan Bilgi Kartı & Oku
       if (seg.tip === 'yurume' && (!seg.mesafe || parseFloat(seg.mesafe) < 0.4)) {
         continue;
       }
@@ -718,6 +786,7 @@
         var rawVehicle = seg.hatBilgisi || (seg.tip === 'tramvay' ? 'Tramvay' : (seg.tip === 'taksi' ? 'Sarı Taksi' : 'Belediye Otobüsü'));
         var cleanHat = rawVehicle.replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDE4F]|\uD83D[\uDE80-\uDEFF]/g, '').trim();
         cleanHat = cleanHat.replace(/T1/g, '').replace(/Akçaray/g, '').replace(/Tramvayı/g, 'Tramvay').trim();
+        cleanHat = cleanHat.replace(/\(Otogar-Umuttepe[^\)]*\)/gi, '(Otogar-Umuttepe)').trim();
         
         var badgeType = 'bus';
         var badgeLabel = 'OTOBÜS';
@@ -733,19 +802,31 @@
           badgeLabel = 'YÜRÜYÜŞ';
         }
 
-        var durakEk = seg.araDurakSayisi ? (' (' + seg.araDurakSayisi + ' Ara Durak)') : (seg.tip === 'taksi' ? ' (Kestirme)' : '');
-        var endpointsText = (seg.baslangic && seg.bitis) ? (seg.baslangic + ' ➔ ' + seg.bitis + durakEk) : 'Güzergah Etabı';
-        var metaText = (seg.mesafe ? (seg.mesafe + ' km') : '') + (seg.sure ? (' · ' + seg.sure + ' dk') : '');
+        var durakEk = seg.araDurakSayisi ? (' (' + seg.araDurakSayisi + ' Durak)') : (seg.tip === 'taksi' ? ' (Kestirme)' : '');
+        var endpointsText = (seg.baslangic && seg.bitis) ? (seg.baslangic + ' ➔ ' + seg.bitis) : 'Güzergah Etabı';
+        endpointsText = endpointsText.replace(/KOÜ Umuttepe Kampüsü/g, 'KOÜ Umuttepe').replace(/İzmit Otogarı \(Terminal\)/g, 'İzmit Otogarı');
+        var metaText = (seg.mesafe ? (seg.mesafe + ' km') : '') + (seg.sure ? (' · ' + seg.sure + ' dk') : '') + durakEk;
 
+        var cand = findBestCalloutOffset(midCoord, streetCoords);
+
+        var strokeColor = (badgeType === 'bus') ? '#2563eb' : ((badgeType === 'tram') ? '#0284c7' : '#ea580c');
+        if (currentTheme === 'dark') {
+          strokeColor = (badgeType === 'bus') ? '#3b82f6' : ((badgeType === 'tram') ? '#38bdf8' : '#f97316');
+        }
+
+        var markerId = 'arrow-marker-' + Math.floor(Math.random() * 100000);
         var calloutHtml =
           '<div class="route-callout callout-' + badgeType + '">' +
             '<div class="route-callout-anchor"></div>' +
-            '<div class="route-callout-stem">' +
-              '<div class="stem-line"></div>' +
-              '<div class="stem-arrow-up"></div>' +
-              '<div class="stem-arrow-top"></div>' +
-            '</div>' +
-            '<div class="route-callout-bubble">' +
+            '<svg class="route-callout-svg" viewBox="-600 -600 1200 1200" style="position:absolute;left:-600px;top:-600px;width:1200px;height:1200px;pointer-events:none;overflow:visible;z-index:3002;">' +
+              '<defs>' +
+                '<marker id="' + markerId + '" markerWidth="11" markerHeight="8" refX="9" refY="4" orient="auto">' +
+                  '<polygon points="0 0, 11 4, 0 8, 3 4" fill="' + strokeColor + '" />' +
+                '</marker>' +
+              '</defs>' +
+              '<line x1="0" y1="0" x2="' + Math.round(cand.edgeX) + '" y2="' + Math.round(cand.edgeY) + '" stroke="' + strokeColor + '" stroke-width="2.8" marker-end="url(#' + markerId + ')" stroke-linecap="round" />' +
+            '</svg>' +
+            '<div class="route-callout-bubble" style="left:' + Math.round(cand.dx) + 'px; top:' + Math.round(cand.dy) + 'px;">' +
               '<div class="callout-vehicle">' +
                 '<span class="vehicle-tag tag-' + badgeType + '">' + badgeLabel + '</span>' +
                 '<span>' + cleanHat + '</span>' +
