@@ -727,6 +727,14 @@ public class MainView extends BorderPane {
                 hedefLonField.setText(fmt6(29.948176));
                 hedefAramaField.setText("41 Burda AVM");
             }
+            case 11 -> {
+                baslangicLatField.setText(fmt6(40.782254));
+                baslangicLonField.setText(fmt6(29.957500));
+                baslangicAramaField.setText("Kocaeli Şehir Hastanesi");
+                hedefLatField.setText(fmt6(40.767000));
+                hedefLonField.setText(fmt6(29.950000));
+                hedefAramaField.setText("Doğu Kışla Parkı");
+            }
         }
         haritaMarkerlariniGuncelle();
         rotaHesaplaButonuTiklandi();
