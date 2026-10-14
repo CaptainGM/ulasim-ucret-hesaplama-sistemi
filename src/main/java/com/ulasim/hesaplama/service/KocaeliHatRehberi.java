@@ -39,7 +39,7 @@ public final class KocaeliHatRehberi {
         // Kocaeli Üniversitesi Umuttepe Kampüsü Hatları
         if (b.contains("umuttepe") || h.contains("umuttepe")) {
             if (b.contains("otogar") || h.contains("otogar")) {
-                return "🚌 Hat 210 (Otogar-Umuttepe Ekspres)";
+                return "🚌 Hat 10 / 13 (Otogar-Umuttepe Kampüs)";
             }
             if (b.contains("sekapark") || h.contains("sekapark")) {
                 return "🚌 Hat 14 (Sekapark-Umuttepe)";
