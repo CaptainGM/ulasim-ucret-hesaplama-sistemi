@@ -15,7 +15,7 @@
       "lon": 29.97411,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_umuttepe", "mesafe": 7.2, "sure": 20, "ucret": 42.0 },
+        { "stopId": "bus_tavsantepe", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
         { "stopId": "bus_sehir_hastanesi", "mesafe": 3.2, "sure": 10, "ucret": 42.0 },
         { "stopId": "bus_yahyakaptan", "mesafe": 1.5, "sure": 6, "ucret": 42.0 },
         { "stopId": "bus_yuvam_akarca", "mesafe": 2.2, "sure": 8, "ucret": 42.0 },
@@ -29,16 +29,16 @@
       }
     },
     {
-      "id": "bus_umuttepe",
-      "name": "KOÜ Umuttepe Kampüsü",
+      "id": "bus_tavsantepe",
+      "name": "Tavşantepe Durağı",
       "type": "bus",
-      "lat": 40.82456,
-      "lon": 29.92167,
-      "sonDurak": true,
+      "lat": 40.77250,
+      "lon": 29.95800,
+      "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_otogar", "mesafe": 7.2, "sure": 20, "ucret": 42.0 },
-        { "stopId": "bus_halkevi", "mesafe": 6.8, "sure": 18, "ucret": 42.0 },
-        { "stopId": "bus_sehir_hastanesi", "mesafe": 5.8, "sure": 16, "ucret": 42.0 }
+        { "stopId": "bus_otogar", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_sehir_hastanesi", "mesafe": 1.4, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_yahyakaptan", "mesafe": 1.2, "sure": 4, "ucret": 42.0 }
       ],
       "transfer": null
     },
@@ -50,7 +50,8 @@
       "lon": 29.95750,
       "sonDurak": false,
       "nextStops": [
-        { "stopId": "bus_umuttepe", "mesafe": 5.8, "sure": 16, "ucret": 42.0 },
+        { "stopId": "bus_gundogdu", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_tavsantepe", "mesafe": 1.4, "sure": 4, "ucret": 42.0 },
         { "stopId": "bus_otogar", "mesafe": 3.2, "sure": 10, "ucret": 42.0 },
         { "stopId": "bus_yahyakaptan", "mesafe": 2.1, "sure": 8, "ucret": 42.0 }
       ],
@@ -59,6 +60,45 @@
         "transferSure": 2,
         "transferUcret": 12.0
       }
+    },
+    {
+      "id": "bus_gundogdu",
+      "name": "Gündoğdu Mahallesi",
+      "type": "bus",
+      "lat": 40.79300,
+      "lon": 29.94800,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_sehir_hastanesi", "mesafe": 1.6, "sure": 5, "ucret": 42.0 },
+        { "stopId": "bus_ayazma", "mesafe": 1.5, "sure": 4, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_ayazma",
+      "name": "Ayazma Konutları",
+      "type": "bus",
+      "lat": 40.80350,
+      "lon": 29.94100,
+      "sonDurak": false,
+      "nextStops": [
+        { "stopId": "bus_gundogdu", "mesafe": 1.5, "sure": 4, "ucret": 42.0 },
+        { "stopId": "bus_umuttepe", "mesafe": 2.8, "sure": 7, "ucret": 42.0 }
+      ],
+      "transfer": null
+    },
+    {
+      "id": "bus_umuttepe",
+      "name": "KOÜ Umuttepe Kampüsü",
+      "type": "bus",
+      "lat": 40.82456,
+      "lon": 29.92167,
+      "sonDurak": true,
+      "nextStops": [
+        { "stopId": "bus_ayazma", "mesafe": 2.8, "sure": 7, "ucret": 42.0 },
+        { "stopId": "bus_halkevi", "mesafe": 6.8, "sure": 18, "ucret": 42.0 }
+      ],
+      "transfer": null
     },
     {
       "id": "bus_halkevi",

@@ -656,7 +656,8 @@
           badgeLabel = 'YÜRÜYÜŞ';
         }
 
-        var endpointsText = (seg.baslangic && seg.bitis) ? (seg.baslangic + ' ➔ ' + seg.bitis) : 'Güzergah Etabı';
+        var durakEk = seg.araDurakSayisi ? (' (' + seg.araDurakSayisi + ' Ara Durak)') : (seg.tip === 'taksi' ? ' (Kestirme)' : '');
+        var endpointsText = (seg.baslangic && seg.bitis) ? (seg.baslangic + ' ➔ ' + seg.bitis + durakEk) : 'Güzergah Etabı';
         var metaText = (seg.mesafe ? (seg.mesafe + ' km') : '') + (seg.sure ? (' · ' + seg.sure + ' dk') : '');
 
         var calloutHtml =

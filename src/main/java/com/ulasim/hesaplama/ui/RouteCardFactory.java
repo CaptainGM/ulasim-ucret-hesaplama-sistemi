@@ -128,6 +128,11 @@ final class RouteCardFactory {
         double indirimliUcret = yolcu.indirimHesapla(segment.getUcret(), segment.getAracTipi());
         StringBuilder metaStr = new StringBuilder();
         metaStr.append(segment.getHatBilgisi());
+        if (segment.getDuraklar() != null && segment.getDuraklar().size() > 2) {
+            metaStr.append(String.format(" · %d Ara Durak", segment.getDuraklar().size() - 2));
+        } else if ("taksi".equalsIgnoreCase(segment.getTip())) {
+            metaStr.append(" · Kestirme");
+        }
         metaStr.append(String.format(" · %.1f km · %.0f dk", segment.getMesafe(), segment.getSure()));
         
         if (indirimliUcret > 0) {

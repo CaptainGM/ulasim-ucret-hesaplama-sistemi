@@ -154,6 +154,9 @@ public class MapView {
             obj.put("bitis", com.ulasim.hesaplama.service.KocaeliHatRehberi.temizDurakAdi(segment.getBitisDurak().isim));
             obj.put("mesafe", String.format(Locale.ROOT, "%.1f", segment.getMesafe()));
             obj.put("sure", (int) Math.round(segment.getSure()));
+            if (segment.getDuraklar() != null && segment.getDuraklar().size() > 2) {
+                obj.put("araDurakSayisi", segment.getDuraklar().size() - 2);
+            }
 
             JSONArray coords = new JSONArray();
             if (segment.getDuraklar() != null && !segment.getDuraklar().isEmpty()) {
